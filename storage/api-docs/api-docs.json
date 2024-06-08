@@ -1,0 +1,1077 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Brokers Web API",
+        "description": "Esta es la documentación para la API que manejará la información de las propiedades o inmuebles  You can find\n out more about Swagger at\n[http://swagger.io](http://swagger.io) or on\n[irc.freenode.net, #swagger](http://swagger.io/irc/).",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "email": "yocumo1998@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/panel/addresses": {
+            "get": {
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Obtener todas las direcciones",
+                "operationId": "addresses",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/addresses/{id}": {
+            "get": {
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Obtener una dirección",
+                "operationId": "addresses/{id}",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de la dirección",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/buildings": {
+            "get": {
+                "tags": [
+                    "Buildings"
+                ],
+                "summary": "Obtener todas las constructoras",
+                "operationId": "buildings",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/buildings/{id}": {
+            "get": {
+                "tags": [
+                    "Buildings"
+                ],
+                "summary": "Obtener una constructora",
+                "operationId": "buildings/{id}",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de la constructora",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/common-zones": {
+            "get": {
+                "tags": [
+                    "CommonZones"
+                ],
+                "summary": "Obtener todas las zonas comunes",
+                "operationId": "common-zones",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/common-zones/{id}": {
+            "get": {
+                "tags": [
+                    "CommonZones"
+                ],
+                "summary": "Obtener una zona común",
+                "operationId": "common-zones/{id}",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de la zona común",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/coownerships": {
+            "get": {
+                "tags": [
+                    "Coownerships"
+                ],
+                "summary": "Obtener todas las copropiedades",
+                "operationId": "coownerships",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/coownerships/{id}": {
+            "get": {
+                "tags": [
+                    "Coownerships"
+                ],
+                "summary": "Obtener una copropiedad",
+                "operationId": "coownerships/{id}",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de la copropiedad",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/external-features": {
+            "get": {
+                "tags": [
+                    "ExternalFeatures"
+                ],
+                "summary": "Obtener todos los tipos de inmuebles",
+                "operationId": "external-features",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/external-features/{id}": {
+            "get": {
+                "tags": [
+                    "ExternalFeatures"
+                ],
+                "summary": "Obtener un tipo de inmueble",
+                "operationId": "external-features/{id}",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id del tipo de inmueble",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/immovables": {
+            "get": {
+                "tags": [
+                    "Immovables"
+                ],
+                "summary": "Obtener todos los inmuebles",
+                "operationId": "immovables",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/immovable-types": {
+            "get": {
+                "tags": [
+                    "ImmovableTypes"
+                ],
+                "summary": "Obtener todos los tipos de inmuebles",
+                "operationId": "immovable-types",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/immovable-types/{id}": {
+            "get": {
+                "tags": [
+                    "ImmovableTypes"
+                ],
+                "summary": "Obtener un tipo de inmueble",
+                "operationId": "immovable-types/{id}",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id del tipo de inmueble",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/internal-features": {
+            "get": {
+                "tags": [
+                    "InternalFeatures"
+                ],
+                "summary": "Obtener todos los tipos de inmuebles",
+                "operationId": "internal-features",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "store"
+                ],
+                "summary": "Guardar una caracteristica interna",
+                "operationId": "store",
+                "requestBody": {
+                    "description": "InternalFeature object that needs to be added to the store",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InternalFeature"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InternalFeature"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/internal-features/{id}": {
+            "get": {
+                "tags": [
+                    "InternalFeatures"
+                ],
+                "summary": "Obtener un tipo de inmueble",
+                "operationId": "internal-features/{id}",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id del tipo de inmueble",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/applicants": {
+            "get": {
+                "tags": [
+                    "Applicant"
+                ],
+                "summary": "Obtener todas los aplicantes o solicitantes",
+                "operationId": "applicants",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/applicants/{id}": {
+            "get": {
+                "tags": [
+                    "Applicant"
+                ],
+                "summary": "Obtener un aplicante o solicitante",
+                "operationId": "applicant",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del aplicante o solicitante",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/applications": {
+            "get": {
+                "tags": [
+                    "Application"
+                ],
+                "summary": "Obtener todas las aplicaciones o solicitudes",
+                "operationId": "applications",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/applications/{id}": {
+            "get": {
+                "tags": [
+                    "Application"
+                ],
+                "summary": "Obtener una aplicacion o solicitud",
+                "operationId": "application",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la aplicacion o solicitud",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/applications/{id}/status": {
+            "put": {
+                "tags": [
+                    "Application"
+                ],
+                "summary": "Cambiar el estado de la solicitud",
+                "operationId": "changeStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la aplicacion o solicitud",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Estado de la solicitud",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "example": "Accepted"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/cosigners": {
+            "get": {
+                "tags": [
+                    "Cosigner"
+                ],
+                "summary": "Obtener todos los codeudores",
+                "operationId": "cosigners",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/cosigners/{id}": {
+            "get": {
+                "tags": [
+                    "Cosigner"
+                ],
+                "summary": "Obtener un codeudor",
+                "operationId": "cosigner/{id}",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del codeudor",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Cosigner"
+                ],
+                "summary": "Eliminar un codeudor",
+                "operationId": "cosigner",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del codeudor",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Codeudor no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/professions": {
+            "get": {
+                "tags": [
+                    "Profession"
+                ],
+                "summary": "Obtener todas las profesiones",
+                "operationId": "professions",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "store"
+                ],
+                "summary": "Agregar una profesion",
+                "operationId": "storeProfession",
+                "requestBody": {
+                    "description": "Profession object that needs to be added to the store",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ingeniero"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Ingeniero"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/professions/{id}": {
+            "get": {
+                "tags": [
+                    "Profession"
+                ],
+                "summary": "Obtener una profesion",
+                "operationId": "profession",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la profesion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Profession"
+                ],
+                "summary": "Actualizar una profesion",
+                "operationId": "updateProfession",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la profesion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Profession object that needs to be added to the store",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Profession"
+                ],
+                "summary": "Eliminar una profesion",
+                "operationId": "deleteProfession",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The id of the profession is required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    },
+                    "404": {
+                        "description": "Profession not found"
+                    },
+                    "200": {
+                        "description": "Profession deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/references": {
+            "get": {
+                "tags": [
+                    "Reference"
+                ],
+                "summary": "Obtener todas las referencias",
+                "operationId": "references",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Reference"
+                ],
+                "summary": "Agregar una referencia",
+                "operationId": "storeReference",
+                "requestBody": {
+                    "description": "Referencia a almacenar",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "lastname": {
+                                        "type": "string"
+                                    },
+                                    "residence_address": {
+                                        "type": "string"
+                                    },
+                                    "residence_country": {
+                                        "type": "string"
+                                    },
+                                    "residence_department": {
+                                        "type": "string"
+                                    },
+                                    "residence_city": {
+                                        "type": "string"
+                                    },
+                                    "kinship": {
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "type": "string"
+                                    },
+                                    "applicant_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/references/{id}": {
+            "get": {
+                "tags": [
+                    "Reference"
+                ],
+                "summary": "Obtener una referencia",
+                "operationId": "reference",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la referencia",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Reference"
+                ],
+                "summary": "Actualizar una referencia",
+                "operationId": "updateReference",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la referencia",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Profession object that needs to be added to the store",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "lastname": {
+                                        "type": "string"
+                                    },
+                                    "residence_address": {
+                                        "type": "string"
+                                    },
+                                    "residence_country": {
+                                        "type": "string"
+                                    },
+                                    "residence_department": {
+                                        "type": "string"
+                                    },
+                                    "residence_city": {
+                                        "type": "string"
+                                    },
+                                    "kinship": {
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "type": "string"
+                                    },
+                                    "applicant_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Reference"
+                ],
+                "summary": "Eliminar una referencia",
+                "operationId": "reference/delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la referencia",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "InternalFeature": {
+                "title": "InternalFeature model",
+                "description": "InternalFeature model",
+                "required": [
+                    "description",
+                    ""
+                ],
+                "properties": {
+                    "description": {
+                        "title": "InternalFeature description",
+                        "description": "InternalFeature description",
+                        "type": "array",
+                        "items": {},
+                        "xml": {
+                            "name": "InternalFeature",
+                            "wrapped": true
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "InternalFeature"
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearer": {
+                "type": "apiKey",
+                "description": "Ingrese el token en formato (Bearer <token>)",
+                "name": "api_key",
+                "in": "header"
+            }
+        }
+    },
+    "security": {
+        "bearer": {
+            "type": "apiKey",
+            "description": "Ingrese el token en formato (Bearer <token>)",
+            "name": "api_key",
+            "in": "header"
+        }
+    }
+}

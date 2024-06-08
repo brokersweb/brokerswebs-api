@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Models\AccountsStatus;
+
+use App\Models\Immovable;
+use App\Models\Owner;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class AccountStatus extends Model
+{
+    use HasUuids, HasFactory, SoftDeletes;
+
+    protected $table = 'account_status';
+    protected $fillable = [
+        'immovable_id',
+        'owner_id',
+        'contract_number',
+        'month',
+        'year',
+        'status'
+    ];
+
+    public function immovable()
+    {
+        return $this->belongsTo(Immovable::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(Owner::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(AccountStatusDetail::class, 'accountstatus_id');
+    }
+
+    public function balance()
+    {
+        return $this->belongsTo(PreviousBalance::class);
+    }
+}
