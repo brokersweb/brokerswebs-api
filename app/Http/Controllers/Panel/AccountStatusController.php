@@ -45,4 +45,9 @@ class AccountStatusController extends Controller
     {
         return $this->accountStatusRepository->getAccountStatusSelect();
     }
+
+    public function downloadInvoice()
+    {
+        return $this->accountStatusRepository->downloadInvoice();
+    }
 }

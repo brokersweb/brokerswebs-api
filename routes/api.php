@@ -144,11 +144,14 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::patch('/{id}', [App\Http\Controllers\Panel\ImmovableController::class, 'update']);
             Route::post('/status-general/{id}', [App\Http\Controllers\Panel\ImmovableController::class, 'statusUpdate']);
         });
+
         Route::group(['prefix' => 'account-status'], function () {
             Route::get('/', [App\Http\Controllers\Panel\AccountStatusController::class, 'index']);
             Route::get('/select-account', [App\Http\Controllers\Panel\AccountStatusController::class, 'indexAccount']);
             Route::post('/', [App\Http\Controllers\Panel\AccountStatusController::class, 'store']);
+            Route::get('/download-invoice', [App\Http\Controllers\Panel\AccountStatusController::class, 'downloadInvoice']);
         });
+
         Route::group(['prefix' => 'accounts-collection'], function () {
             Route::get('/', [App\Http\Controllers\Panel\AccountCollectionController::class, 'index']);
             Route::get('/select-account-collection', [App\Http\Controllers\Panel\AccountCollectionController::class, 'indexAccountCollection']);
@@ -203,6 +206,11 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::get('/', [App\Http\Controllers\SupportController::class, 'index']);
             Route::get('/{id}', [App\Http\Controllers\SupportController::class, 'show']);
             Route::post('/{id}/reply', [App\Http\Controllers\SupportController::class, 'createReply']);
+        });
+
+        // Facturas
+        Route::group(['prefix' => 'invoices'], function () {
+            Route::get('/', [App\Http\Controllers\InvoiceController::class, 'getPeso']);
         });
     });
 });

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Helpers\NumberToWords;
 use App\Models\User;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
@@ -24,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             'App\Repositories\Renting\ApplicationRepository',
         );
+
+        $this->app->bind('number-to-words', function () {
+            return new NumberToWords();
+        });
     }
 
 

@@ -9,12 +9,15 @@ use App\Http\Resources\Admin\AccountStatusSelectResource;
 use App\Models\AccountsStatus\AccountStatus;
 use App\Models\AccountsStatus\AccountStatusDetail;
 use App\Models\AccountsStatus\PreviousBalance;
+use App\Models\CompanyConfiguration;
 use App\Models\Immovable;
 use App\Traits\ApiResponse;
 use Illuminate\Config\Repository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
+use PDF;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AccountStatusRepository extends Repository
 {
@@ -165,5 +168,66 @@ class AccountStatusRepository extends Repository
             }
         }
         return response()->json($immovables);
+    }
+
+
+    public function downloadInvoice()
+    {
+        $company = CompanyConfiguration::first();
+        // $data = [
+        //     'title' => 'Welcome to ItSolutionStuff.com',
+        //     'date' => date('m/d/Y')
+        // ];
+
+        // $pdf = PDF::loadView('contables.invoice_status_account', $data);
+        // return $pdf->download('Estado de cuenta.pdf');
+
+
+        $data = [
+            'invoice_number' => 'FE 405',
+            'date' => '27/05/2024',
+            'customer' => [
+                'name' => $company->name,
+                'nit' => $company->nit,
+                'address' => $company->address,
+                'phone' => '(+54) ' . $company->cellphone,
+            ],
+            'company' => [
+                'name' => $company->name,
+                'email' => $company->email,
+                'nit' => $company->nit,
+                'address' => $company->address,
+                'city' => $company->city . ', ' . $company->department,
+                'phone' => '(+54) ' . $company->cellphone . ' - ' . $company->phone,
+            ],
+            'items' => [
+                ['description' => 'Arrendamiento de inmueble', 'quantity' => 1, 'total' => 1092800.00],
+            ],
+            'total' => 1092800.00,
+            'observations' => 'Observaciones de la factura',
+            'iva' => [
+                'value' => 19,
+                'total' => 207632.00
+            ],
+            'retention' => [
+                'value' => 3.5,
+                'total' => 38248.00
+            ],
+            'qr' => QrCode::size(100)->generate('http://www.simplesoftware.io'),
+
+        ];
+
+
+        $pdf = PDF::loadView('contables.invoice_status_account', $data);
+        $pdf->setPaper('a4', 'portrait');
+        $pdfContent = $pdf->output();
+
+        return response()->streamDownload(
+            function () use ($pdfContent) {
+                echo $pdfContent;
+            },
+            'factura_' . $data['invoice_number'] . '.pdf',
+            ['Content-Type' => 'application/pdf']
+        );
     }
 }
