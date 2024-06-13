@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CoownershipAddRequest;
 use App\Http\Resources\Admin\ImmovableAdminResource;
 use App\Models\Coownership;
 use App\Models\CoownershipDetail;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class CoownershipController extends Controller
 {
@@ -76,7 +78,7 @@ class CoownershipController extends Controller
             return $this->errorResponse('Error al crear la copropiedad', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    public function store(Request $request)
+    public function store2(Request $request)
     {
         $rules = [
             'name' => 'required|max:255',
@@ -106,6 +108,8 @@ class CoownershipController extends Controller
 
         return $this->successResponse($coownerships, Response::HTTP_CREATED);
     }
+
+
     public function update(Request $request, $id)
     {
         $rules = [
@@ -141,6 +145,68 @@ class CoownershipController extends Controller
         return $this->successResponse($coownerships);
     }
 
+    public function store(Request $request)
+    {
+
+        $valid = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'elevator' => 'required|in:Si,No',
+            'intercom' => 'required|in:Si,No',
+            'garbage_shut' => 'required|in:Si,No',
+            'visitor_parking' => 'required|in:Si,No',
+            'social_room' => 'required|in:Si,No',
+            'sports_court' => 'required|in:Si,No',
+            'bbq_area' => 'required|in:Si,No',
+            'childish_games' => 'required|in:Si,No',
+            'parkland' => 'required|in:Si,No',
+            'jogging_track' => 'required|in:Si,No',
+            'jacuzzi' => 'required|in:Si,No',
+            'turkish' => 'required|in:Si,No',
+            'gym' => 'required|in:Si,No',
+            'closed_circuit_tv' => 'required|in:Si,No',
+            'climatized_pool' => 'required|in:Si,No',
+            'goal' => 'required|in:Si,No',
+            'goal_hours' => 'nullable',
+            'petfriendly_zone' => 'required|in:Si,No',
+        ]);
+
+        if ($valid->fails()) {
+            return $this->errorResponseBadRequest($valid->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
+
+        try {
+            $coownership = Coownership::create([
+                'name' => $request->name,
+            ]);
+
+            CoownershipDetail::create([
+                'coownership_id' => $coownership->id,
+                'elevator' => $request->elevator,
+                'intercom' => $request->intercom,
+                'garbage_shut' => $request->garbage_shut,
+                'visitor_parking' => $request->visitor_parking,
+                'social_room' => $request->social_room,
+                'sports_court' => $request->sports_court,
+                'bbq_area' => $request->bbq_area,
+                'childish_games' => $request->childish_games,
+                'parkland' => $request->parkland,
+                'jogging_track' => $request->jogging_track,
+                'jacuzzi' => $request->jacuzzi,
+                'turkish' => $request->turkish,
+                'gym' => $request->gym,
+                'closed_circuit_tv' => $request->closed_circuit_tv,
+                'climatized_pool' => $request->climatized_pool,
+                'goal' => $request->goal,
+                'goal_hours' => $request->goal_hours,
+                'petfriendly_zone' => $request->petfriendly_zone,
+            ]);
+
+            return $this->successResponse($coownership->name, Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al crear la unidad/copropiedad', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
     public function destroy($id)
     {
         try {

@@ -86,10 +86,11 @@ class ImmovableController extends Controller
             'unit_type' => 'required|max:255',
             'floor_type_id' => 'required|max:255|exists:floor_types,id',
             'cuisine_type_id' => 'required|max:255|exists:cuisine_types,id',
-            'know_building_company' => 'required|in:0,1',
-            'building_company_name' => 'required_if:know_building_company,0|max:255',
-            'building_company_id' => 'required_if:know_building_company,1|exists:building_companies,id',
+            // 'know_building_company' => 'required|in:0,1',
+            // 'building_company_name' => 'required_if:know_building_company,0|max:255',
+            'building_company_id' => 'nullable',
             'co_ownership' => 'required|in:Si,No',
+            'co_ownership_id' => 'required_if:co_ownership,Si',
             'year_construction' => 'nullable',
             'tower' => 'nullable',
             'municipality' => 'required|max:255',
@@ -144,8 +145,6 @@ class ImmovableController extends Controller
                 'terms' => $request->terms,
             ]);
 
-            $this->storeBuilding($request, $immovable);
-
             // Details Added
             $immovable->details()->create([
                 'immovable_id' => $immovable->id,
@@ -187,8 +186,17 @@ class ImmovableController extends Controller
             ]);
             // Si tiene co-propiedad
             if ($request->co_ownership == 'Si') {
-                $this->storeWithCoownership($request, $immovable);
+                $immovable->update([
+                    'co_ownership_id' => $request->co_ownership_id,
+                ]);
             }
+
+            if ($request->building_company_id != '') {
+                $immovable->update([
+                    'building_company_id' => $request->building_company_id,
+                ]);
+            }
+
             // Agregar Imágenes a la galeria
             if ($request->has('images_gallery')) {
                 foreach ($request->images_gallery as $image) {
@@ -208,101 +216,7 @@ class ImmovableController extends Controller
             return $this->successResponseWithMessage('Inmueble agregado correctamente', Response::HTTP_CREATED);
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json([
-                'message' => 'Error al agregar el inmueble',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public function storeWithCoownership($request, $immovable)
-    {
-        $rules = [
-            'know_coownership' => 'required|in:0,1',
-            'co_ownership_name' => 'required_if:know_coownership,0|max:150',
-            'co_ownership_id' => 'required_if:know_coownership,1|exists:coownerships,id',
-            'elevator' => 'required_if:know_coownership,0|in:Si,No',
-            'intercom' => 'required_if:know_coownership,0|in:Si,No',
-            'garbage_shut' => 'required_if:know_coownership,0|in:Si,No',
-            'visitor_parking' => 'required_if:know_coownership,0|in:Si,No',
-            'social_room' => 'required_if:know_coownership,0|in:Si,No',
-            'sports_court' => 'required_if:know_coownership,0|in:Si,No',
-            'bbq_area' => 'required_if:know_coownership,0|in:Si,No',
-            'childish_games' => 'required_if:know_coownership,0|in:Si,No',
-            'parkland' => 'required_if:know_coownership,0|in:Si,No',
-            'jogging_track' => 'required_if:know_coownership,0|in:Si,No',
-            'jacuzzi' => 'required_if:know_coownership,0|in:Si,No',
-            'turkish' => 'required_if:know_coownership,0|in:Si,No',
-            'gym' => 'required_if:know_coownership,0|in:Si,No',
-            'closed_circuit_tv' => 'required_if:know_coownership,0|in:Si,No',
-            'climatized_pool' => 'required_if:know_coownership,0|in:Si,No',
-            'goal' => 'required_if:know_coownership,0|in:Si,No',
-            'goal_hours' => 'nullable',
-            'petfriendly_zone' => 'required_if:know_coownership,0|in:Si,No',
-        ];
-        $this->validate($request, $rules);
-        // Co-ownership Added
-        switch ($request->know_coownership) {
-            case 0:
-                $coownership = Coownership::create([
-                    'name' => $request->co_ownership_name,
-                ]);
-                // Update Immovable with co-ownership id
-                $immovable->update([
-                    'co_ownership_id' => $coownership->id,
-                ]);
-                // Co-ownership details Added
-                CoownershipDetail::create([
-                    'coownership_id' => $coownership->id,
-                    'elevator' => $request->elevator,
-                    'intercom' => $request->intercom,
-                    'garbage_shut' => $request->garbage_shut,
-                    'visitor_parking' => $request->visitor_parking,
-                    'social_room' => $request->social_room,
-                    'sports_court' => $request->sports_court,
-                    'bbq_area' => $request->bbq_area,
-                    'childish_games' => $request->childish_games,
-                    'parkland' => $request->parkland,
-                    'jogging_track' => $request->jogging_track,
-                    'jacuzzi' => $request->jacuzzi,
-                    'turkish' => $request->turkish,
-                    'gym' => $request->gym,
-                    'closed_circuit_tv' => $request->closed_circuit_tv,
-                    'climatized_pool' => $request->climatized_pool,
-                    'goal' => $request->goal,
-                    'goal_hours' => $request->goal_hours,
-                    'petfriendly_zone' => $request->petfriendly_zone,
-                ]);
-                // Set the co-ownership id to the immovable
-                $immovable->update([
-                    'co_ownership_id' => $coownership->id,
-                ]);
-                break;
-            case 1:
-                $coownership = Coownership::where('id', $request->co_ownership_id)->first();
-                $immovable->update([
-                    'co_ownership_id' => $coownership->id,
-                ]);
-                break;
-        }
-    }
-
-    public function storeBuilding($request, $immovable)
-    {
-        switch ($request->know_building_company) {
-            case 0:
-                $building = BuildingCompany::updateOrCreate([
-                    'name' => $request->building_company_name,
-                ]);
-                $immovable->update([
-                    'building_company_id' => $building->id,
-                ]);
-                break;
-            case 1:
-                $immovable->update([
-                    'building_company_id' => $request->building_company_id,
-                ]);
-                break;
+            return $this->errorResponse($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

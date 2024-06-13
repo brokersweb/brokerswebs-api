@@ -93,6 +93,8 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::post('/', [App\Http\Controllers\CompanyConfigurationController::class, 'store']);
             Route::put('/{id}', [App\Http\Controllers\CompanyConfigurationController::class, 'update']);
         });
+
+        // Unidades
         Route::group(['prefix' => 'coownerships'], function () {
             Route::get('/', [App\Http\Controllers\Panel\CoownershipController::class, 'index']);
             // Immovables - rentados
@@ -103,13 +105,14 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::get('/sold', [App\Http\Controllers\Panel\CoownershipController::class, 'coownershipsSold']);
             Route::get('/immovables-sold/{id}', [App\Http\Controllers\Panel\CoownershipController::class, 'immovablesSoldByCoownership']);
 
-            Route::delete('/{id}', [App\Http\Controllers\Panel\CoownershipController::class, 'destroy']);
             Route::post('/',  [App\Http\Controllers\Panel\CoownershipController::class, 'store']);
+            Route::delete('/{id}', [App\Http\Controllers\Panel\CoownershipController::class, 'destroy']);
             Route::post('/store-modal',  [App\Http\Controllers\Panel\CoownershipController::class, 'storeModal']);
 
             Route::get('/{id}', [App\Http\Controllers\Panel\CoownershipController::class, 'show']);
             Route::put('/{id}', [App\Http\Controllers\Panel\CoownershipController::class, 'update']);
         });
+
         Route::group(['prefix' => 'readjustments'], function () {
             Route::get('/', [App\Http\Controllers\Panel\ReadjustmentController::class, 'index']);
             Route::get('/{id}', [App\Http\Controllers\Panel\ReadjustmentController::class, 'show']);
@@ -268,6 +271,7 @@ Route::prefix('immovables')->group(function () {
 Route::prefix('coownerships')->group(function () {
     Route::get('/',  [App\Http\Controllers\CoownershipController::class, 'index']);
     Route::get('/details/{id}',  [App\Http\Controllers\CoownershipController::class, 'show']);
+    Route::post('/store-modal',  [App\Http\Controllers\CoownershipController::class, 'storeModal']);
 });
 
 /*
@@ -284,9 +288,12 @@ Route::prefix('professions')->group(function () {
 });
 Route::prefix('buildings')->group(function () {
     Route::get('/', [App\Http\Controllers\BuildingCompanyController::class, 'index']);
+    Route::post('/', [App\Http\Controllers\BuildingCompanyController::class, 'store']);
+
 });
 Route::prefix('markets')->group(function () {
     Route::get('/', [App\Http\Controllers\Base\MarketController::class, 'index']);
+
 });
 
 /*
