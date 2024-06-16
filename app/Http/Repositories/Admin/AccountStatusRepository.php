@@ -368,7 +368,7 @@ class AccountStatusRepository extends Repository
 
             // Guardar el PDF en el storage
             $pdfPath = 'invoices/' . $data['customer']['dni'] . '/' . $fileName;
-            Storage::put($pdfPath, $pdf->output());
+            // Storage::put($pdfPath, $pdf->output());
 
             $pdfBase64 = 'data:application/pdf;base64,' . base64_encode($pdfContent);
 
