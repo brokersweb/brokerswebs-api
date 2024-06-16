@@ -283,7 +283,7 @@ class AccountStatusRepository extends Repository
     public function generateInvoicePDF($request, $account, $configInvoice, $immovable)
     {
 
-        try {
+        // try {
             // Create Invoice
             $invoice = Invoice::create([
                 'xml' => 1,
@@ -378,8 +378,8 @@ class AccountStatusRepository extends Repository
                 'doc_name' => $fileName,
                 'sequential' => $data['invoice_number'],
             ]);
-        } catch (\Exception $e) {
-            return $this->errorResponse('Ocurrió un error mientras se creaba el estado de cuenta', Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        // } catch (\Exception $e) {
+        //     return $this->errorResponse('Ocurrió un error mientras se creaba el estado de cuenta', Response::HTTP_INTERNAL_SERVER_ERROR);
+        // }
     }
 }
