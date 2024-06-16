@@ -101,7 +101,7 @@ class AccountStatusRepository extends Repository
 
         DB::beginTransaction();
 
-        try {
+        // try {
             $accountStatus = $this->model->create([
                 'immovable_id' => $request->immovable_id,
                 'owner_id' => $immovable->owner_id,
@@ -153,10 +153,10 @@ class AccountStatusRepository extends Repository
 
             DB::commit();
             return $this->successResponseWithMessage('Estado de cuenta generado con éxito.', Response::HTTP_CREATED);
-        } catch (\Exception $e) {
+        // } catch (\Exception $e) {
             DB::rollBack();
-            return $this->errorResponse('Ocurrió un error mientras se creaba el estado de cuenta', Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        //     return $this->errorResponse('Ocurrió un error mientras se creaba el estado de cuenta', Response::HTTP_INTERNAL_SERVER_ERROR);
+        // }
     }
 
     public function updatePreviewBalance($request, $account)
