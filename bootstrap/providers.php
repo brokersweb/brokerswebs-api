@@ -9,4 +9,5 @@ return [
     App\Providers\EventServiceProvider::class,
     Spatie\Permission\PermissionServiceProvider::class,
     L5SwaggerServiceProvider::class,
+    Barryvdh\DomPDF\ServiceProvider::class,
 ];

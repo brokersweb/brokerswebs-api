@@ -28,6 +28,7 @@ return new class extends Migration
             $table->double('items')->nullable();
             $table->string('amount_in_letters')->nullable();
             $table->string('terms_payment')->nullable();
+            $table->json('payment_observation')->nullable();
             $table->text('observation')->nullable();
             $table->double('amount_paid')->nullable();
             $table->enum('status', ['Pending', 'Paid'])->default('Pending');
