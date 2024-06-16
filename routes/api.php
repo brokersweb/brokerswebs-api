@@ -274,6 +274,12 @@ Route::prefix('coownerships')->group(function () {
     Route::post('/store-modal',  [App\Http\Controllers\CoownershipController::class, 'storeModal']);
 });
 
+
+/**
+ * Facturas
+ */
+Route::get('invoice/{id}', [App\Http\Controllers\InvoiceController::class, 'scannerDownload'])->name('invoice.download');
+
 /*
     |--------------------------------------------------------------------------
     | Renting Routes
@@ -289,11 +295,9 @@ Route::prefix('professions')->group(function () {
 Route::prefix('buildings')->group(function () {
     Route::get('/', [App\Http\Controllers\BuildingCompanyController::class, 'index']);
     Route::post('/', [App\Http\Controllers\BuildingCompanyController::class, 'store']);
-
 });
 Route::prefix('markets')->group(function () {
     Route::get('/', [App\Http\Controllers\Base\MarketController::class, 'index']);
-
 });
 
 /*

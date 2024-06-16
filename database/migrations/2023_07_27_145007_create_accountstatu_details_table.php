@@ -20,7 +20,6 @@ return new class extends Migration
             $table->decimal('amount', 10, 2)->comment('Monto o Total');
             $table->string('immovable_code');
             $table->string('owner_dni');
-            $table->string('cutoff_date')->comment('Fecha de corte');
             $table->timestamps();
         });
     }

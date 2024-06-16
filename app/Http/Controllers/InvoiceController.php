@@ -2,16 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\NumberToWords;
+use App\Models\Invoice\Invoice;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
     //
 
-    public function getPeso()
+
+    public function scannerDownload($id)
     {
-        $inWords = NumberToWords::toPesos(1354000);
-        return response()->json(['pesos' => $inWords]);
+        $invoice = Invoice::find($id);
+        // dd($invoice);
+
+        $pdfBase64 = $invoice->doc_file;
+        $pdfContent = base64_decode($pdfBase64);
+
+        $fileName = "Estado de cuenta_{$invoice->id}.pdf";
+
+        return response($pdfContent)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', "attachment; filename={$fileName}");
     }
 }

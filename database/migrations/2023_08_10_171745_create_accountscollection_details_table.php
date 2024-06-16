@@ -20,7 +20,6 @@ return new class extends Migration
             $table->decimal('amount', 10, 2)->comment('Monto o Total');
             $table->string('immovable_code')->comment('Código del inmueble');
             $table->string('tenant_dni')->comment('Cédula del inquilino');
-            $table->string('cutoff_date')->comment('Fecha de corte');
             $table->timestamps();
         });
     }

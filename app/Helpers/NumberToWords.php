@@ -85,7 +85,12 @@ class NumberToWords
         $baseUnit = pow(1000, floor(log($number, 1000)));
         $numBaseUnits = (int) ($number / $baseUnit);
         $remainder = $number % $baseUnit;
-        $string = self::toWords($numBaseUnits) . ' ' . self::$scales[log($baseUnit, 1000)];
+
+        if ($baseUnit == 1000 && $numBaseUnits == 1) {
+            $string = self::$scales[log($baseUnit, 1000)];
+        } else {
+            $string = self::toWords($numBaseUnits) . ' ' . self::$scales[log($baseUnit, 1000)];
+        }
 
         if ($remainder) {
             $string .= $remainder < 100 ? ' ' : ' ';

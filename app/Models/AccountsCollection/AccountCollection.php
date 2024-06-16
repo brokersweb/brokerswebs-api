@@ -20,6 +20,16 @@ class AccountCollection extends Model
         'contract_number',
         'month',
         'year',
+        'expiration_date',
+        'amount',
+        'amount_vat',
+        'amount_retention',
+        'items',
+        'amount_in_letters',
+        'terms_payment',
+        'payment_observation',
+        'observation',
+        'amount_paid',
         'status'
     ];
 

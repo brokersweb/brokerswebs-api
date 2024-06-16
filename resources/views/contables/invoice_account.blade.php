@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Factura| Estado de cuenta</title>
-
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -196,7 +195,6 @@
             width: auto;
         }
     </style>
-
 </head>
 
 <body>
@@ -217,8 +215,7 @@
                     {{ $company['email'] }}
                 </td>
                 <td class="text-center" style="width: 20%">
-                    {{-- {{ QrCode::size(100)->generate('Make me into a QrCode!') }} --}}
-                   QR CODE
+                    <img src="data:image/png;base64,{{ $qrcode }}">
                 </td>
                 <td style="width: 15%">
                     <div class="invoice-consecutive">
@@ -247,14 +244,16 @@
                             <th>Dirección</th>
                             <td>{{ $customer['address'] }}</td>
                             <th>Ciudad</th>
-                            <td>Bogotá - Colombia</td>
+                            <td>{{ $customer['city'] }}</td>
                         </tr>
-                        <tr>
-                            <th>Tipo documento</th>
-                            <td>CC</td>
-                            <th>N° documento</th>
-                            <td>43534534543</td>
-                        </tr>
+                        @if ($customer['rut'] == '')
+                            <tr>
+                                <th>Tipo documento</th>
+                                <td>{{ $customer['dniType'] }}</td>
+                                <th>N° documento</th>
+                                <td>{{ $customer['dni'] }}</td>
+                            </tr>
+                        @endif
                     </table>
                 </td>
                 <td style="width: 30%;">
@@ -268,7 +267,7 @@
                         <tbody>
                             <tr>
                                 <td>{{ $date }}</td>
-                                <td>{{ $date }}</td>
+                                <td>{{ $due_date }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -289,9 +288,9 @@
                 @foreach ($items as $index => $item)
                     <tr>
                         <td class="text-center">{{ $index + 1 }}</td>
-                        <td>{{ $item['description'] }}</td>
-                        <td class="text-right">{{ $item['quantity'] }}</td>
-                        <td class="text-right">{{ number_format($item['total'], 2, ',', '.') }}</td>
+                        <td>{{ $item['concept'] }}</td>
+                        <td class="text-right">{{ $item['qty'] }}</td>
+                        <td class="text-right">{{ number_format($item['amount'], 2, ',', '.') }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -304,16 +303,33 @@
                         <td class="td_condition">
                             <strong>Valor en Letras:</strong>
                             <p class="text_condition">
-                                Un millón noventa y dos mil ochocientos pesos.
+                                {{ $total_in_letters }}
                             </p>
                         </td>
                     </tr>
                     <tr>
                         <td class="td_condition">
                             <strong>Condiciones de Pago:</strong>
-                            <p class="text_condition">
-                                Transferencia
-                            </p>
+                            @if ($payment_option != 3)
+                                <p class="text_condition">
+                                    {{ $payment_condition }}
+                                </p>
+                            @else
+                                @foreach ($quotes as $quote)
+                                    <table style="width: 100%">
+                                        <td style="width:60%">
+                                            <p class="text_condition">
+                                                {{ $quote['description'] }} por
+                                            </p>
+                                        </td>
+                                        <td style="width:40%">
+                                            <p class="text_condition text-right" style="margin-right:10px">
+                                                $ {{ $quote['amount'] }}
+                                            </p>
+                                        </td>
+                                    </table>
+                                @endforeach
+                            @endif
                         </td>
                     </tr>
                 </table>
@@ -335,7 +351,7 @@
                         </tr>
                         <tr class="table_active">
                             <td><strong>Total a Pagar</strong></td>
-                            <td class="text-right totals">{{ number_format($total, 2, ',', '.') }}</td>
+                            <td class="text-right totals">{{ number_format($total_paid, 2, ',', '.') }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -351,11 +367,16 @@
         <footer class="footer">
             <p>
                 A esta factura de venta aplican las normas relativas a la letra de cambio (artículo 5 Ley 1231 de 2008).
-                Con esta el Comprador declara haber recibido real y materialmente las mercancías o prestación de servicios descritos en este título. <strong>Número Autorización Electrónica 342423 aprobado en 20240304 prefijo fac desde el número 1000 al 5000 Vigencia: 12 Meses</strong><br><br>
+                Con esta el Comprador declara haber recibido real y materialmente las mercancías o prestación de
+                servicios descritos en este título. <strong>Número Autorización Electrónica
+                    {{ $config_invoice['authorization_number'] }} aprobado en
+                    {{ $config_invoice['authorization_date'] }}
+                    prefijo {{ $config_invoice['prefix'] }} desde el número {{ $config_invoice['from'] }} al
+                    {{ $config_invoice['to'] }} Vigencia: {{ $config_invoice['vigence'] }}</strong><br><br>
                 Responsable de IVA - Actividad Económica: Actividades de administración empresarial.
             </p>
             <p>
-                <strong>CUFE:</strong> 1234567890123456789012345678901234567890123456789012345678901234
+                <strong>CUFE:</strong> {{ $config_invoice['cufe'] }}<br>
             </p>
         </footer>
     </div>

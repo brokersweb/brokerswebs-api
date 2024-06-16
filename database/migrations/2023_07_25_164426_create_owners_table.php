@@ -27,12 +27,13 @@ return new class extends Migration
             $table->date('birthdate')->nullable();
             $table->enum('gender', ['Masculino', 'Femenino', 'Otro'])->nullable();
             $table->enum('type', ['holder', 'secondary'])->default('secondary');
+            $table->string('rut')->nullable(); // Registro Único Tributario
+            $table->string('nit')->nullable(); // Número de Identificación Tributaria
             $table->enum('civil_status', ['Soltero', 'Casado', 'Unión libre', 'Viudo', 'Divorciado'])->nullable();
             $table->integer('dependent_people')->comment('N° personas a cargo')->nullable();
             $table->string('profession')->nullable();
             $table->longText('dni_file')->nullable();
             $table->longText('photo')->nullable();
-            $table->text('comment')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

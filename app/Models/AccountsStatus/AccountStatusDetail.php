@@ -19,7 +19,6 @@ class AccountStatusDetail extends Model
         'amount',
         'immovable_code',
         'owner_dni',
-        'cutoff_date'
     ];
 
     public function accountStatus()

@@ -18,6 +18,18 @@ return new class extends Migration
             $table->string('contract_number')->comment('N° de contrato');
             $table->string('month')->comment('Mes')->nullable();
             $table->string('year')->comment('Año')->nullable();
+            $table->date('expiration_date')->nullable();
+            $table->double('amount')->nullable();
+            // Valor IVA
+            $table->double('amount_vat')->nullable();
+            // Valor retefuente
+            $table->double('amount_retention')->nullable();
+            // Items total
+            $table->double('items')->nullable();
+            $table->string('amount_in_letters')->nullable();
+            $table->string('terms_payment')->nullable();
+            $table->text('observation')->nullable();
+            $table->double('amount_paid')->nullable();
             $table->enum('status', ['Pending', 'Paid'])->default('Pending');
             $table->softDeletes();
             $table->timestamps();

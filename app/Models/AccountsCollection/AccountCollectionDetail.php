@@ -20,11 +20,10 @@ class AccountCollectionDetail extends Model
         'amount',
         'immovable_code',
         'tenant_dni',
-        'cutoff_date'
     ];
 
     public function accountscollection()
     {
-        return $this->belongsTo(AccountCollection::class, 'accountscollection_id' , 'id');
+        return $this->belongsTo(AccountCollection::class, 'accountscollection_id', 'id');
     }
 }
