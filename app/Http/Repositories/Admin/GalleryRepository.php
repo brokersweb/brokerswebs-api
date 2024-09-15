@@ -24,7 +24,7 @@ class GalleryRepository extends Repository
 
     public function getGalleries($id)
     {
-        $galleries = Gallery::where('immovable_id', $id)->orderBy('created_at', 'desc')->paginate(1);
+        $galleries = Gallery::where('immovable_id', $id)->orderBy('created_at', 'desc')->paginate(5);
 
         try {
             if (!$galleries) {

@@ -10,6 +10,7 @@ use App\Http\Resources\Admin\AccountStatusSelectResource;
 use App\Models\AccountsStatus\AccountStatus;
 use App\Models\AccountsStatus\AccountStatusDetail;
 use App\Models\AccountsStatus\PreviousBalance;
+use App\Models\Base\SeveralLog;
 use App\Models\CompanyConfiguration;
 use App\Models\Immovable;
 use App\Models\Invoice\ConfigurationInvoice;
@@ -27,6 +28,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Number;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use SimpleSoftwareIO\QrCode\Facades\QrCode as FacadesQrCode;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AccountStatusRepository extends Repository
 {
@@ -48,7 +51,7 @@ class AccountStatusRepository extends Repository
 
     public function getAccountStatus($id)
     {
-        $account = $this->model::find($id)->load('details');
+        $account = $this->model::find($id);
         try {
             if (!empty($account)) {
                 return response()->json($account);
@@ -73,7 +76,7 @@ class AccountStatusRepository extends Repository
         }
     }
 
-
+    # TODO:: Crear estado de cuenta
     public function create($request)
     {
         $date_now = date('Y-m-d');
@@ -101,7 +104,7 @@ class AccountStatusRepository extends Repository
 
         DB::beginTransaction();
 
-        // try {
+        try {
             $accountStatus = $this->model->create([
                 'immovable_id' => $request->immovable_id,
                 'owner_id' => $immovable->owner_id,
@@ -153,10 +156,10 @@ class AccountStatusRepository extends Repository
 
             DB::commit();
             return $this->successResponseWithMessage('Estado de cuenta generado con éxito.', Response::HTTP_CREATED);
-        // } catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
-        //     return $this->errorResponse('Ocurrió un error mientras se creaba el estado de cuenta', Response::HTTP_INTERNAL_SERVER_ERROR);
-        // }
+            return $this->errorResponse('Ocurrió un error mientras se creaba el estado de cuenta', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function updatePreviewBalance($request, $account)
@@ -190,31 +193,28 @@ class AccountStatusRepository extends Repository
         ]);
     }
 
-    public function getAccountStatusPdfData($id)
-    {
-        $accountStatu = AccountStatusPdfResource::collection($this->model->where('id', $id)->get());
-        return response()->json($accountStatu[0], Response::HTTP_OK);
-    }
+
     // Select Formulario
-    public function getAccountStatusSelect(): JsonResponse
+    public function getImmovables(): JsonResponse
     {
         $immovables = AccountStatusSelectResource::collection(Immovable::where('category', '!=', 'sale')->get());
-        foreach ($immovables as $immovable) {
-            $account = AccountStatus::where('immovable_id', $immovable->id)->orderBy('id', 'desc')->first();
-            if ($account) {
-                $balance = PreviousBalance::where('account_status_id', $account->id)->first();
-                if ($balance) {
-                    $immovable->balance = $balance->balance;
-                } else {
-                    $immovable->balance = 0;
-                }
-            } else {
-                $immovable->balance = 0;
-            }
-        }
+        // foreach ($immovables as $immovable) {
+        //     $account = AccountStatus::where('immovable_id', $immovable->id)->orderBy('id', 'desc')->first();
+        //     if ($account) {
+        //         $balance = PreviousBalance::where('account_status_id', $account->id)->first();
+        //         if ($balance) {
+        //             $immovable->balance = $balance->balance;
+        //         } else {
+        //             $immovable->balance = 0;
+        //         }
+        //     } else {
+        //         $immovable->balance = 0;
+        //     }
+        // }
         return response()->json($immovables);
     }
 
+    # TODO:: Generar PDF - Factura
     public function getPaymentCondition($request)
     {
         $condition = '';
@@ -364,10 +364,10 @@ class AccountStatusRepository extends Repository
             $pdf->setPaper('a4', 'portrait');
             $pdfContent = $pdf->output();
             $timestamp = now()->timestamp;
-            $fileName = 'Estado de cuenta_' . $data['invoice_number'] . '_' . $timestamp . '.pdf';
+            $fileName = 'Estado de cuenta_' . $data['invoice_number'] . '_' . $timestamp;
 
             // Guardar el PDF en el storage
-            $pdfPath = 'invoices/' . $data['customer']['dni'] . '/' . $fileName;
+            // $pdfPath = 'invoices/' . $data['customer']['dni'] . '/' . $fileName;
             // Storage::put($pdfPath, $pdf->output());
 
             $pdfBase64 = 'data:application/pdf;base64,' . base64_encode($pdfContent);
@@ -380,6 +380,95 @@ class AccountStatusRepository extends Repository
             ]);
         } catch (\Exception $e) {
             return $this->errorResponse('Ocurrió un error mientras se creaba el estado de cuenta', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    public function download($id)
+    {
+        $invoice = Invoice::select('doc_file', 'doc_name')->where('entityable_type', AccountStatus::class)->where('entityable_id', $id)->first();
+
+        if (!$invoice) {
+            return $this->errorResponse('Invoice not found', Response::HTTP_NOT_FOUND);
+        }
+        //  Save several log
+        $this->utilsController->storeSeveralLog($id, AccountStatus::class, 'download');
+        return $this->successResponse($invoice, Response::HTTP_OK);
+    }
+
+
+    public function cancelAccStatus($id)
+    {
+        $account = AccountStatus::find($id);
+        if (!$account) {
+            return $this->errorResponse('Estado de cuenta no encontrado.', Response::HTTP_NOT_FOUND);
+        }
+
+        $invoice = Invoice::where('entityable_type', AccountStatus::class)->where('entityable_id', $account->id)->first();
+
+        if (!$invoice) {
+            return $this->errorResponse('Invoice not found', Response::HTTP_NOT_FOUND);
+        }
+        $invoice->delete();
+
+
+        try {
+            // Cancel Invoice
+            $account->update([
+                'status' => 'cancelled'
+            ]);
+
+            $account->delete();
+            $account->details()->delete();
+
+            return $this->successResponseWithMessage('Estado de cuenta cancelado o anulado', Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Ocurrió un error mientras se cancelaba el estado de cuenta', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    public function sendToCustomerInvoice($id)
+    {
+        $account = AccountStatus::find($id);
+        if (!$account) {
+            return $this->errorResponse('Estado de cuenta no encontrado.', Response::HTTP_NOT_FOUND);
+        }
+        $invoice = Invoice::where('entityable_type', AccountStatus::class)->where('entityable_id', $account->id)->first();
+        if (!$invoice) {
+            return $this->errorResponse('Invoice not found', Response::HTTP_NOT_FOUND);
+        }
+
+
+        try {
+
+            $base64pdf = substr($invoice->doc_file, strpos($invoice->doc_file, ',') + 1);
+            $pdfContent = base64_decode($base64pdf);
+
+            $fileName = 'documento_' . Str::random(10) . '.pdf';
+            Storage::disk('local')->put('temp/' . $fileName, $pdfContent);
+            $filePath = storage_path('app/temp/' . $fileName);
+
+            $recipientEmail = "yonnycumo2017@hotmail.com";
+            $subject = $invoice->doc_name;
+            $body = "Se adjunta el estado de cuenta en formato PDF.";
+
+            // Enviar el correo con el archivo adjunto
+            Mail::send([], [], function ($message) use ($recipientEmail, $subject, $body, $filePath, $fileName) {
+                $message->to($recipientEmail)
+                    ->subject($subject)
+                    ->text($body)
+                    ->attach($filePath, [
+                        'as' => $fileName,
+                        'mime' => 'application/pdf',
+                    ]);
+            });
+
+            // Eliminar el archivo temporal
+            Storage::disk('local')->delete('temp/' . $fileName);
+            return $this->successResponseWithMessage('Correo enviado con éxito', Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Ocurrió un error mientras se enviaba el estado de cuenta', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

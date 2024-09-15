@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Utils;
 
 use App\Http\Controllers\Controller;
 use App\Models\Base\Gallery;
+use App\Models\Base\SeveralLog;
 use App\Models\Immovable;
 use App\Models\Renting\Application;
 use App\Traits\ApiResponse;
+use Carbon\Carbon;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class UtilsController extends Controller
@@ -25,6 +28,13 @@ class UtilsController extends Controller
         if ($root_number == $exist) {
             $this->generateRootNumber();
         }
+        return $root_number;
+    }
+
+    public function generateSerialNumber(): string
+    {
+        $alphab_num = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $root_number = 'ORD-' . rand(10000, 99999) . '-' . substr(str_shuffle($alphab_num), 0, 6);
         return $root_number;
     }
 
@@ -168,6 +178,29 @@ class UtilsController extends Controller
                 $message->to($to)->subject($subject);
                 $message->from('soporte@brokerssoluciones.com');
             });
+        }
+    }
+
+
+    public function storeSeveralLog($id, $auType, $event)
+    {
+        try {
+            SeveralLog::updateOrCreate(
+                [
+                    'auditable_id' => $id,
+                    'auditable_type' => $auType,
+                    'event' => $event,
+                ],
+                [
+                    'user_id' => Auth::id(),
+                    'url' => request()->fullUrl(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'updated_at' => Carbon::now(),
+                ]
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al guardar el log.', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CoownershipAddRequest;
+use App\Http\Resources\Admin\Coownership\CoownershipResource;
 use App\Http\Resources\Admin\ImmovableAdminResource;
 use App\Models\Coownership;
 use App\Models\CoownershipDetail;
@@ -224,9 +225,14 @@ class CoownershipController extends Controller
     //  Coownership que tienen inmuebles rented
     public function coownershipsRented()
     {
-        $coownerships = Coownership::select('id', 'name')->whereHas('immovables', function ($query) {
+        // $coownerships = Coownership::select('id', 'name')->whereHas('immovables', function ($query) {
+        //     $query->where('status', 'rented');
+        // })->get();
+        // return $this->successResponse($coownerships);
+
+        $coownerships = CoownershipResource::collection(Coownership::whereHas('immovables', function ($query) {
             $query->where('status', 'rented');
-        })->get();
+        })->get());
         return $this->successResponse($coownerships);
     }
 

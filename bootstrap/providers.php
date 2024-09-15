@@ -10,4 +10,7 @@ return [
     Spatie\Permission\PermissionServiceProvider::class,
     L5SwaggerServiceProvider::class,
     Barryvdh\DomPDF\ServiceProvider::class,
+    OwenIt\Auditing\AuditingServiceProvider::class,
+    Maatwebsite\Excel\ExcelServiceProvider::class,
+    // 'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 ];

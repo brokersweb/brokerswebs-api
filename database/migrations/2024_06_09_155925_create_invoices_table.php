@@ -21,8 +21,8 @@ return new class extends Migration
             // Consecutivo
             $table->string('sequential')->nullable();
             $table->foreignUuid('user_id')->constrained();
-
-            $table->string('status')->nullable();
+            //Estados DIAN: Pendiente , Emitida, Aprobada, Rechazada
+            $table->enum('status_dian', ['pending', 'sent', 'approved', 'refused'])->default('pending');
             $table->softDeletes();
             $table->timestamps();
         });

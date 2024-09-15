@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
 
@@ -23,10 +24,13 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::put('/{id}/permissions-update', [App\Http\Controllers\RoleController::class, 'updatePermissions']);
         });
         Route::group(['prefix' => 'galleries'], function () {
+            Route::get('/', [App\Http\Controllers\Panel\GalleryController::class, 'index']);
+            Route::get('/{id}', [App\Http\Controllers\Panel\GalleryController::class, 'show']);
             Route::post('/', [App\Http\Controllers\Panel\GalleryController::class, 'store']);
             Route::delete('/{id}', [App\Http\Controllers\Panel\GalleryController::class, 'destroy']);
             Route::get('/{id}/status', [App\Http\Controllers\Panel\GalleryController::class, 'updateStatus']);
-            Route::get('/immovable/destroy/{id}', [App\Http\Controllers\Panel\GalleryController::class, 'destroyAll']);
+            Route::get('/rejected-all/{id}', [App\Http\Controllers\Panel\GalleryController::class, 'rejectedAll']);
+            Route::get('/accepted-all/{id}', [App\Http\Controllers\Panel\GalleryController::class, 'acceptedAll']);
         });
         Route::group(['prefix' => 'permissions'], function () {
             Route::get('/', [App\Http\Controllers\PermissionController::class, 'index']);
@@ -70,6 +74,7 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::put('/{id}', [App\Http\Controllers\ExternalFeatureController::class, 'update']);
             Route::delete('/{id}', [App\Http\Controllers\ExternalFeatureController::class, 'destroy']);
         });
+
         Route::group(['prefix' => 'users'], function () {
             Route::get('/', [App\Http\Controllers\UserController::class, 'index']);
             Route::get('/{id}', [App\Http\Controllers\UserController::class, 'show']);
@@ -80,19 +85,27 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::post('/{id}/roles', [App\Http\Controllers\UserController::class, 'assignRole']);
             Route::put('/{id}/roles-update', [App\Http\Controllers\UserController::class, 'updateRoles']);
         });
+
         Route::group(['prefix' => 'tenants'], function () {
+
             Route::get('/', [App\Http\Controllers\Panel\TenantController::class, 'index']);
             Route::get('/{id}', [App\Http\Controllers\Panel\TenantController::class, 'show']);
             Route::post('/', [App\Http\Controllers\Panel\TenantController::class, 'store']);
             Route::put('/{id}', [App\Http\Controllers\Panel\TenantController::class, 'update']);
+
+            // Otra Información
+            Route::get('/reference/{id}', [App\Http\Controllers\Panel\TenantController::class, 'getReferences']);
+            Route::get('/cosigner/{id}', [App\Http\Controllers\Panel\TenantController::class, 'getCosigners']);
             // Immovables
             Route::get('/{id}/rentings', [App\Http\Controllers\Panel\TenantController::class, 'getRentings']);
             Route::get('/immovable-letter/{id}', [App\Http\Controllers\Panel\TenantController::class, 'getImmoLetter']);
         });
+
         Route::group(['prefix' => 'company-configurations'], function () {
             Route::post('/', [App\Http\Controllers\CompanyConfigurationController::class, 'store']);
             Route::put('/{id}', [App\Http\Controllers\CompanyConfigurationController::class, 'update']);
         });
+
 
         // Unidades
         Route::group(['prefix' => 'coownerships'], function () {
@@ -146,13 +159,24 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::get('/details-update/{id}', [App\Http\Controllers\Panel\ImmovableController::class, 'showUpdate']);
             Route::patch('/{id}', [App\Http\Controllers\Panel\ImmovableController::class, 'update']);
             Route::post('/status-general/{id}', [App\Http\Controllers\Panel\ImmovableController::class, 'statusUpdate']);
+
+            Route::post('/update-basic/{id}', [App\Http\Controllers\Panel\ImmovableController::class, 'updateBasic']);
         });
 
         Route::group(['prefix' => 'account-status'], function () {
             Route::get('/', [App\Http\Controllers\Panel\AccountStatusController::class, 'index']);
-            Route::get('/select-account', [App\Http\Controllers\Panel\AccountStatusController::class, 'indexAccount']);
+            Route::get('/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'showMe']);
+            Route::delete('/cancelled/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'cancel']);
+            Route::get('/invoice-sent-customer/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'invoiceSentCustomer']);
+
+
             Route::post('/', [App\Http\Controllers\Panel\AccountStatusController::class, 'store']);
-            Route::get('/download-invoice', [App\Http\Controllers\Panel\AccountStatusController::class, 'downloadInvoice']);
+            Route::get('/download/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'download']);
+        });
+
+
+        Route::group(['prefix' => 'account-status/inmovables'], function () {
+            Route::get('/form', [App\Http\Controllers\Panel\AccountStatusController::class, 'indexImmovablesAc']);
         });
 
         Route::group(['prefix' => 'accounts-collection'], function () {
@@ -214,6 +238,77 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
         // Facturas
         Route::group(['prefix' => 'invoices'], function () {
             Route::get('/', [App\Http\Controllers\InvoiceController::class, 'getPeso']);
+        });
+
+
+        /**
+         *  MODULO DE INVENTARIO DE MATERIALES Y HERRAMIENTAS
+         */
+
+        Route::prefix('inventory')->group(function () {
+
+            // Proveedores
+            Route::get('suppliers', [App\Http\Controllers\Inventory\SupplierController::class, 'index']);
+            Route::get('suppliers/{id}', [App\Http\Controllers\Inventory\SupplierController::class, 'show']);
+            Route::post('suppliers', [App\Http\Controllers\Inventory\SupplierController::class, 'store']);
+            Route::put('suppliers/{id}', [App\Http\Controllers\Inventory\SupplierController::class, 'update']);
+            Route::delete('suppliers/{id}', [App\Http\Controllers\Inventory\SupplierController::class, 'destroy']);
+
+
+            // Materiales
+            Route::prefix('materials')->group(function () {
+                Route::get('/', [App\Http\Controllers\Inventory\MaterialController::class, 'index']);
+                Route::get('/{id}', [App\Http\Controllers\Inventory\MaterialController::class, 'show']);
+                Route::post('/', [App\Http\Controllers\Inventory\MaterialController::class, 'store']);
+                Route::put('/{id}', [App\Http\Controllers\Inventory\MaterialController::class, 'update']);
+                Route::delete('/{id}', [App\Http\Controllers\Inventory\MaterialController::class, 'destroy']);
+
+                Route::post('/import', [App\Http\Controllers\Inventory\MaterialController::class, 'import']);
+            });
+
+            // Herramientas
+            Route::prefix('tools')->group(function () {
+                Route::get('/', [App\Http\Controllers\Inventory\ToolController::class, 'index']);
+                Route::post('/', [App\Http\Controllers\Inventory\ToolController::class, 'store']);
+                Route::get('/{id}', [App\Http\Controllers\Inventory\ToolController::class, 'show']);
+                Route::put('/{id}', [App\Http\Controllers\Inventory\ToolController::class, 'update']);
+                Route::delete('/{id}', [App\Http\Controllers\Inventory\ToolController::class, 'destroy']);
+                Route::post('/import', [App\Http\Controllers\Inventory\ToolController::class, 'import']);
+                // Dispobibilidad para prestamos
+                Route::get('availability', [App\Http\Controllers\Inventory\ToolController::class, 'availableTools']);
+            });
+
+            // Prestamos de Herramientas
+            Route::prefix('tool-loans')->group(function () {
+                Route::get('/tools', [App\Http\Controllers\Inventory\ToolLoanController::class, 'tools']);
+
+
+                Route::get('/', [App\Http\Controllers\Inventory\ToolLoanController::class, 'index']);
+                Route::post('/', [App\Http\Controllers\Inventory\ToolLoanController::class, 'store']);
+                Route::get('/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'show']);
+                Route::put('/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'update']);
+                Route::delete('/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'destroy']);
+            });
+
+            Route::get('/users/loans', [App\Http\Controllers\Panel\UserController::class, 'index']);
+
+            // Detalles de Prestamos de Herramientas
+
+            Route::post('tool-loan/items/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'addItems']);
+            Route::delete('tool-loan/items/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'removeItem']);
+            Route::patch('tool-loan/items/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'updateItemQty']);
+            Route::get('tool-loan/items/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'getItem']);
+
+
+            // Categorias
+            Route::get('categories', [App\Http\Controllers\Inventory\CategoryController::class, 'index']);
+            Route::get('categories/tools', [App\Http\Controllers\Inventory\CategoryController::class, 'tools']);
+
+
+            Route::prefix('entrances')->group(function () {
+                Route::get('/', [App\Http\Controllers\Inventory\InventoryPurchaseController::class, 'index']);
+                Route::post('/', [App\Http\Controllers\Inventory\InventoryPurchaseController::class, 'store']);
+            });
         });
     });
 });
@@ -309,7 +404,7 @@ Route::prefix('markets')->group(function () {
 
 Route::group(['prefix' => 'panel', 'middleware' => ['auth']], function () {
 
-    Route::get('account-status/details/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'show']);
+
     Route::get('account-status/owner/{owner_id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'indexByOwner']);
     Route::get('accounts-collection/details/{id}', [App\Http\Controllers\Panel\AccountCollectionController::class, 'show']);
     Route::get('accounts-collection/tenant/{tenant_id}', [App\Http\Controllers\Panel\AccountCollectionController::class, 'indexByTenant']);
@@ -328,8 +423,8 @@ Route::group(['prefix' => 'panel', 'middleware' => ['auth']], function () {
     });
 
     // Matches /account-status
-    Route::get('account-status/micropdf-data/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'pdfData']);
-    Route::get('accounts-collection/micropdf-data/{id}', [App\Http\Controllers\Panel\AccountCollectionController::class, 'pdfData']);
+    // Route::get('account-status/micropdf-data/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'pdfData']);
+    // Route::get('accounts-collection/micropdf-data/{id}', [App\Http\Controllers\Panel\AccountCollectionController::class, 'pdfData']);
 
     Route::prefix('letters')->group(function () {
         Route::get('/admissions', [App\Http\Controllers\Panel\LetterController::class, 'index']);
@@ -341,3 +436,22 @@ Route::group(['prefix' => 'panel', 'middleware' => ['auth']], function () {
         Route::get('/{id}', [App\Http\Controllers\Panel\LetterController::class, 'show']);
     });
 });
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Only Auth , Inquilino y Admin && Panel - Routes
+|--------------------------------------------------------------------------
+*/
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Only Auth , Propietario y Admin && Panel - Routes
+|--------------------------------------------------------------------------
+*/
+
+// Route::get('tools/availability', [App\Http\Controllers\Inventory\ToolController::class, 'availableTools']);

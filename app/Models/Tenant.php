@@ -48,7 +48,7 @@ class Tenant extends Model
 
     public function cosigners()
     {
-        return $this->hasMany(Cosigner::class);
+        return $this->morphMany(Cosigner::class, 'cosignerable');
     }
 
     public function employee()

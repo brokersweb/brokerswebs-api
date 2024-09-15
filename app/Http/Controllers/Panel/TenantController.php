@@ -35,4 +35,20 @@ class TenantController extends Controller
     {
         return $this->tenantRepository->getImmovableById($id);
     }
+
+    public function show($id)
+    {
+        return $this->tenantRepository->show($id);
+    }
+
+
+    public function getReferences($id)
+    {
+        return $this->tenantRepository->getReferences($id);
+    }
+
+    public function getCosigners($id)
+    {
+        return $this->tenantRepository->getCosigners($id);
+    }
 }

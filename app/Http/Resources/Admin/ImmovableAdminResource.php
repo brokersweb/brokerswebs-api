@@ -27,6 +27,7 @@ class ImmovableAdminResource extends JsonResource
             'created_at' => $this->created_at ? $this->created_at->format('d-m-Y') : null,
             'status' => $this->status,
             'hasTenant' => $this->hasTenant(),
+            'tenant_id' => $this->tenants()->first()?->id,
         ];
     }
 }

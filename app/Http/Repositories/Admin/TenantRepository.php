@@ -6,6 +6,8 @@ use App\Http\Resources\Admin\Tenant\ImmovableLetterResource;
 use App\Http\Resources\Admin\Tenant\TenantLetterResource;
 use App\Models\Immovable;
 use App\Models\ImmovableTenant;
+use App\Models\Renting\Cosigner;
+use App\Models\Renting\Reference;
 use App\Models\Tenant;
 use App\Traits\ApiResponse;
 use Illuminate\Config\Repository;
@@ -92,6 +94,46 @@ class TenantRepository extends Repository
             return $this->errorResponse('No se encontró el inmueble', Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
             return $this->errorResponse('Ocurrió un error mientras se obtenía el inmueble', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function show($id)
+    {
+        $tenant = Tenant::whereId($id)->with('references', 'cosigners')->get();
+
+        try {
+            if (!empty($tenant)) {
+                return $this->successResponse($tenant[0], Response::HTTP_OK);
+            }
+            return $this->errorResponse('No se encontró el inquilino', Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Ocurrió un error mientras se obtenía el inquilino', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function getReferences($id)
+    {
+        $references = Reference::where('referencable_type', Tenant::class)->where('referencable_id', $id)->get();
+        try {
+            if (!empty($references)) {
+                return $this->successResponse($references, Response::HTTP_OK);
+            }
+            return $this->errorResponse('No se encontró la referencia', Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Ocurrió un error mientras se obtenía la referencia', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function getCosigners($id)
+    {
+        $cosigners = Cosigner::where('cosignerable_type', Tenant::class)->where('cosignerable_id', $id)->get();
+        try {
+            if (!empty($cosigners)) {
+                return $this->successResponse($cosigners, Response::HTTP_OK);
+            }
+            return $this->errorResponse('No se encontró el codeudor', Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Ocurrió un error mientras se obtenía el codeudor', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -10,6 +10,7 @@ use App\Models\Immovable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ImmovableController extends Controller
@@ -26,6 +27,7 @@ class ImmovableController extends Controller
     public function index(): JsonResponse
     {
         $immovables = ImmovableAdminResource::collection(Immovable::orderBy('created_at', 'desc')->get());
+
         return $this->successResponse($immovables);
     }
 
@@ -167,5 +169,76 @@ class ImmovableController extends Controller
     public function showUpdate($id)
     {
         return $this->immovableRepository->showUpdate($id);
+    }
+
+
+    # TODO:: ACTUALIZACIONES
+
+    public function updateBasic(Request $request, $id)
+    {
+        $valid = Validator::make($request->all(), [
+            'owner_id' => 'required|exists:owners,id',
+            'title' => 'required|max:255',
+            'video_url' => 'nullable',
+            'image_status' => 'required',
+            'video_status' => 'required',
+            'immovabletype_id' => 'required|exists:immovabletypes,id',
+            'enrollment' => 'nullable|max:255',
+            'immonumber' => 'nullable|max:255',
+            'stratum' => 'required|min:1|max:6',
+            'bedrooms' => 'required|min:1',
+            'bathrooms' => 'required|min:1',
+            'cuisine_type_id' => 'required|exists:cuisine_types,id',
+            'floor_type_id' => 'required|exists:floor_types,id',
+            'floor_located' => 'required|min:1',
+            'tower' => 'nullable',
+            'category' => 'required',
+            'description' => 'required',
+        ]);
+
+        if ($valid->fails()) {
+            return $this->errorResponse($valid->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
+        // Inmueble
+        $immovable = Immovable::find($id)->with('details')->first();
+
+        if (!$immovable) {
+            return $this->errorResponse('Inmueble no encontrado', Response::HTTP_NOT_FOUND);
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            $immovable->update([
+                'owner_id' => $request->owner_id,
+                'title' => $request->title,
+                'video_url' => $request->video_url,
+                'image_status' => $request->image_status,
+                'video_status' => $request->video_status,
+                'immovabletype_id' => $request->immovabletype_id,
+                'enrollment' => $request->enrollment,
+                'immonumber' => $request->immonumber,
+                'category' => $request->category,
+                'description' => $request->description,
+            ]);
+
+            $immovable->details()->update([
+                'bedrooms' => $request->bedrooms,
+                'bathrooms' => $request->bathrooms,
+                'floor_located' => $request->floor_located,
+                'stratum' => $request->stratum,
+                'tower' => $request->tower,
+                'floor_type_id' => $request->floor_type_id,
+                'cuisine_type_id' => $request->cuisine_type_id,
+            ]);
+
+            DB::commit();
+            return $this->successResponseWithMessage('Inmueble actualizado');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $this->errorResponse('Error al actualizar el inmueble', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

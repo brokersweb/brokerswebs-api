@@ -56,7 +56,7 @@ class MockArraySessionStorage implements SessionStorageInterface
             return true;
         }
 
-        if (empty($this->id)) {
+        if (!$this->id) {
             $this->id = $this->generateId();
         }
 
@@ -169,7 +169,7 @@ class MockArraySessionStorage implements SessionStorageInterface
      */
     protected function generateId(): string
     {
-        return hash('sha256', uniqid('ss_mock_', true));
+        return bin2hex(random_bytes(16));
     }
 
     protected function loadSession(): void

@@ -2,16 +2,19 @@
 
 namespace App\Models\AccountsStatus;
 
+use App\Models\Base\SeveralLog;
 use App\Models\Immovable;
 use App\Models\Owner;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class AccountStatus extends Model
+class AccountStatus extends Model implements Auditable
 {
     use HasUuids, HasFactory, SoftDeletes;
+    use \OwenIt\Auditing\Auditable;
 
     protected $table = 'account_status';
     protected $fillable = [
@@ -51,5 +54,10 @@ class AccountStatus extends Model
     public function balance()
     {
         return $this->belongsTo(PreviousBalance::class);
+    }
+
+    public function logs()
+    {
+        return $this->morphMany(SeveralLog::class, 'auditable');
     }
 }

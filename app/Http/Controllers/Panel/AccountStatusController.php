@@ -21,7 +21,7 @@ class AccountStatusController extends Controller
         return $this->accountStatusRepository->all();
     }
 
-    public function show($id)
+    public function showMe($id)
     {
         return $this->accountStatusRepository->getAccountStatus($id);
     }
@@ -36,18 +36,24 @@ class AccountStatusController extends Controller
         return $this->accountStatusRepository->getOwnerAccountStatus($owner_id);
     }
 
-    public function pdfData($id)
+
+    public function indexImmovablesAc()
     {
-        return $this->accountStatusRepository->getAccountStatusPdfData($id);
+        return $this->accountStatusRepository->getImmovables();
     }
 
-    public function indexAccount()
+    public function download($id)
     {
-        return $this->accountStatusRepository->getAccountStatusSelect();
+        return $this->accountStatusRepository->download($id);
     }
 
-    public function downloadInvoice()
+    public function cancel($id)
     {
-        return $this->accountStatusRepository->downloadInvoice();
+        return $this->accountStatusRepository->cancelAccStatus($id);
+    }
+
+    public function invoiceSentCustomer($id)
+    {
+        return $this->accountStatusRepository->sendToCustomerInvoice($id);
     }
 }
