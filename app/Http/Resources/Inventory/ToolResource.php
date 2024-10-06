@@ -15,7 +15,7 @@ class ToolResource extends JsonResource
             'total_quantity' => $this->total_quantity,
             'available_quantity' => $this->available_quantity,
             'photo' => $this->photo,
-            'category' => $this->category?->name,
+            'price' => $this->price,
             'status' => $this->status(),
             'created_at' => $this->created_at,
         ];

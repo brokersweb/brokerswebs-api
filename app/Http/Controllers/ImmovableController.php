@@ -6,6 +6,7 @@ use App\Helpers\ImmovableCodeGenerator;
 use App\Http\Controllers\Utils\UtilsController;
 use App\Http\Resources\ImmovableRentingResource;
 use App\Http\Resources\ImmovableResource;
+use App\Http\Resources\Inventory\ImmovableOperationResource;
 use App\Models\BuildingCompany;
 use App\Models\Coownership;
 use App\Models\CoownershipDetail;
@@ -255,4 +256,7 @@ class ImmovableController extends Controller
         }
         return $this->successResponse($immovable);
     }
+
+
+   
 }

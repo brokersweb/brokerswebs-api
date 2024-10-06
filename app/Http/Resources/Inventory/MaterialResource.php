@@ -15,7 +15,7 @@ class MaterialResource extends JsonResource
             'stock' => $this->stock,
             'unit' => $this->unit,
             'photo' => $this->photo,
-            'category' => $this->category?->name,
+            'price_basic' => $this->price_basic,
             'status' => $this->status(),
             'created_at' => $this->created_at,
         ];

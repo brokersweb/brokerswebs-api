@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('inventory_stock_materials', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name');
-            $table->string('type')->default('material');
+            $table->foreignUuid('user_id')->constrained('users');
+            $table->foreignUuid('owner_id')->constrained('users');
+            $table->foreignUuid('material_id')->constrained('materials');
+            $table->bigInteger('qty');
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('inventory_stock_materials');
     }
 };

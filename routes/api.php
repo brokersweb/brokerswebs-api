@@ -76,6 +76,8 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
         });
 
         Route::group(['prefix' => 'users'], function () {
+            Route::get('/staff', [App\Http\Controllers\UserController::class, 'indexStaff']);
+
             Route::get('/', [App\Http\Controllers\UserController::class, 'index']);
             Route::get('/{id}', [App\Http\Controllers\UserController::class, 'show']);
             Route::get('/status-change/{id}', [App\Http\Controllers\UserController::class, 'changeStatus']);
@@ -257,6 +259,10 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
 
             // Materiales
             Route::prefix('materials')->group(function () {
+                Route::get('/options', [App\Http\Controllers\Inventory\MaterialController::class, 'indexOptions']);
+                Route::get('/sales', [App\Http\Controllers\Inventory\MaterialController::class, 'indexToSale']);
+
+
                 Route::get('/', [App\Http\Controllers\Inventory\MaterialController::class, 'index']);
                 Route::get('/{id}', [App\Http\Controllers\Inventory\MaterialController::class, 'show']);
                 Route::post('/', [App\Http\Controllers\Inventory\MaterialController::class, 'store']);
@@ -266,6 +272,28 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
                 Route::post('/import', [App\Http\Controllers\Inventory\MaterialController::class, 'import']);
             });
 
+            Route::prefix('material-stock')->group(function () {
+                Route::get('/', [App\Http\Controllers\Inventory\InventoryStockMaterialController::class, 'index']);
+
+                Route::get('/staff/{id}', [App\Http\Controllers\Inventory\InventoryStockMaterialController::class, 'stockStaff']);
+            });
+
+            // Ordenes de Trabajo
+            Route::prefix('order-services')->group(function () {
+                Route::get('/immovables', [App\Http\Controllers\Panel\ImmovableController::class, 'indexOrderServeice']);
+
+                Route::get('/', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'index']);
+                Route::post('/', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'store']);
+                Route::get('/{id}', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'show']);
+            });
+
+            // Entradas
+            Route::prefix('entries')->group(function () {
+                Route::get('/', [App\Http\Controllers\Inventory\InventoryEntranceController::class, 'index']);
+                Route::post('/', [App\Http\Controllers\Inventory\InventoryEntranceController::class, 'store']);
+                Route::patch('/updated-statu/{id}', [App\Http\Controllers\Inventory\InventoryEntranceController::class, 'updateStatu']);
+                Route::delete('/{id}', [App\Http\Controllers\Inventory\InventoryEntranceController::class, 'destroy']);
+            });
             // Herramientas
             Route::prefix('tools')->group(function () {
                 Route::get('/', [App\Http\Controllers\Inventory\ToolController::class, 'index']);
@@ -282,7 +310,6 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::prefix('tool-loans')->group(function () {
                 Route::get('/tools', [App\Http\Controllers\Inventory\ToolLoanController::class, 'tools']);
 
-
                 Route::get('/', [App\Http\Controllers\Inventory\ToolLoanController::class, 'index']);
                 Route::post('/', [App\Http\Controllers\Inventory\ToolLoanController::class, 'store']);
                 Route::get('/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'show']);
@@ -298,6 +325,13 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::delete('tool-loan/items/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'removeItem']);
             Route::patch('tool-loan/items/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'updateItemQty']);
             Route::get('tool-loan/items/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'getItem']);
+
+            // Operaciones de materiales
+            Route::prefix('operations-material')->group(function () {
+                Route::get('/', [App\Http\Controllers\Inventory\InventoryOperationMaterialController::class, 'index']);
+                Route::post('/', [App\Http\Controllers\Inventory\InventoryOperationMaterialController::class, 'store']);
+                Route::get('/{code}', [App\Http\Controllers\Inventory\InventoryOperationMaterialController::class, 'show']);
+            });
 
 
             // Categorias

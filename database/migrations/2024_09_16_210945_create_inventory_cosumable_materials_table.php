@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventory_purchase_details', function (Blueprint $table) {
+        Schema::create('inventory_consumable_materials', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('inventory_purchase_id')->constrained('inventory_purchases');
+            $table->foreignUuid('service_order_id')->constrained('service_orders');
             $table->uuidMorphs('material'); // Material y Herramienta
             $table->bigInteger('qty');
-            $table->decimal('price', 10, 2);
-            $table->decimal('total', 10, 2)->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventory_purchase_details');
+        Schema::dropIfExists('inventory_consumable_materials');
     }
 };

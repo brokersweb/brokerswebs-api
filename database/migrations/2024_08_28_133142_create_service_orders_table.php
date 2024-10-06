@@ -13,18 +13,29 @@ return new class extends Migration
     {
         Schema::create('service_orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('order_number')->unique();
+            $table->string('code')->unique();
             $table->foreignUuid('user_id')->constrained();
             $table->foreignUuid('assigned_id')->constrained('users');
             $table->uuidMorphs('client');
-            $table->enum('status', ['opened', 'completed'])->default('opened');
-            $table->text('description');
+            $table->enum('status', ['opened', 'in_progress', 'completed','cancelled'])->default('opened');
+            $table->text('comment')->nullable();
             $table->date('start_date');
             $table->time('start_time');
-            $table->string('type')->nullable();
-            $table->string('location');
-            $table->string('client_phone')->nullable();
             $table->timestamps();
+        });
+
+        Schema::create('service_order_details', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('service_order_id')->constrained();
+            $table->text('description');
+            $table->bigInteger('qty');
+            $table->double('price', 12, 2);
+            $table->timestamps();
+        });
+
+
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->enum('status', ['sent', 'pending', 'paid', 'overdue', 'cancelled', 'rejected'])->nullable();
         });
     }
 
@@ -34,5 +45,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('service_orders');
+        Schema::dropIfExists('service_order_services');
+
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 };

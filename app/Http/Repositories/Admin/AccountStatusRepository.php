@@ -104,62 +104,62 @@ class AccountStatusRepository extends Repository
 
         DB::beginTransaction();
 
-        try {
-            $accountStatus = $this->model->create([
-                'immovable_id' => $request->immovable_id,
-                'owner_id' => $immovable->owner_id,
-                'contract_number' => '1010',
-                'month' => $month,
-                'year' => $year,
-                'expiration_date' => '2025-09-01',
-                'terms_payment' => $this->getPaymentCondition($request->payment_condition),
-                'observation' => $request->observation
-            ]);
-            // Crear detalles y calcular totales
-            $totalAmount = 0;
-            foreach ($request->details as $detail) {
-                $accountStatus->details()->create([
-                    'qty' => $detail['qty'],
-                    'concept' => $detail['concept'],
-                    'value_unit' => $detail['value_unit'],
-                    'amount' => $detail['amount'],
-                    'immovable_code' => $immovable->code,
-                    'owner_dni' => $immovable->owner->dni,
-                ]);
-
-                $totalAmount += $detail['amount'];
-            }
-
-            // Actualizar totales
-            $amountVat = $totalAmount * ($configInvoice->vat / 100);
-            $amountRetention = $totalAmount * ($configInvoice->retention / 100);
-            $amountPaid = intval($totalAmount + $amountVat + $amountRetention);
-
-            $accountStatus->update([
-                'amount' => $totalAmount,
-                'amount_vat' => $amountVat,
-                'amount_retention' => $amountRetention,
-                'amount_paid' => $amountPaid,
-                'items' => count($request->details),
-                'amount_in_letters' => NumberToWords::toPesos($amountPaid),
+        // try {
+        $accountStatus = $this->model->create([
+            'immovable_id' => $request->immovable_id,
+            'owner_id' => $immovable->owner_id,
+            'contract_number' => '1010',
+            'month' => $month,
+            'year' => $year,
+            'expiration_date' => '2025-09-01',
+            'terms_payment' => $this->getPaymentCondition($request->payment_condition),
+            'observation' => $request->observation
+        ]);
+        // Crear detalles y calcular totales
+        $totalAmount = 0;
+        foreach ($request->details as $detail) {
+            $accountStatus->details()->create([
+                'qty' => $detail['qty'],
+                'concept' => $detail['concept'],
+                'value_unit' => $detail['value_unit'],
+                'amount' => $detail['amount'],
+                'immovable_code' => $immovable->code,
+                'owner_dni' => $immovable->owner->dni,
             ]);
 
-
-            if ($existatus_account !== null) {
-                $this->updatePreviewBalance($request, $accountStatus);
-            } else {
-                $this->createPreviewBalance($request, $accountStatus);
-            }
-
-            // Print PDF
-            $this->generateInvoicePDF($request, $accountStatus, $configInvoice, $immovable);
-
-            DB::commit();
-            return $this->successResponseWithMessage('Estado de cuenta generado con éxito.', Response::HTTP_CREATED);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return $this->errorResponse('Ocurrió un error mientras se creaba el estado de cuenta', Response::HTTP_INTERNAL_SERVER_ERROR);
+            $totalAmount += $detail['amount'];
         }
+
+        // Actualizar totales
+        $amountVat = $totalAmount * ($configInvoice->vat / 100);
+        $amountRetention = $totalAmount * ($configInvoice->retention / 100);
+        $amountPaid = intval($totalAmount + $amountVat + $amountRetention);
+
+        $accountStatus->update([
+            'amount' => $totalAmount,
+            'amount_vat' => $amountVat,
+            'amount_retention' => $amountRetention,
+            'amount_paid' => $amountPaid,
+            'items' => count($request->details),
+            'amount_in_letters' => NumberToWords::toPesos($amountPaid),
+        ]);
+
+
+        if ($existatus_account !== null) {
+            $this->updatePreviewBalance($request, $accountStatus);
+        } else {
+            $this->createPreviewBalance($request, $accountStatus);
+        }
+
+        // Print PDF
+        $this->generateInvoicePDF($request, $accountStatus, $configInvoice, $immovable);
+
+        DB::commit();
+        return $this->successResponseWithMessage('Estado de cuenta generado con éxito.', Response::HTTP_CREATED);
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     return $this->errorResponse('Ocurrió un error mientras se creaba el estado de cuenta', Response::HTTP_INTERNAL_SERVER_ERROR);
+        // }
     }
 
     public function updatePreviewBalance($request, $account)
@@ -197,20 +197,25 @@ class AccountStatusRepository extends Repository
     // Select Formulario
     public function getImmovables(): JsonResponse
     {
-        $immovables = AccountStatusSelectResource::collection(Immovable::where('category', '!=', 'sale')->get());
-        // foreach ($immovables as $immovable) {
-        //     $account = AccountStatus::where('immovable_id', $immovable->id)->orderBy('id', 'desc')->first();
-        //     if ($account) {
-        //         $balance = PreviousBalance::where('account_status_id', $account->id)->first();
-        //         if ($balance) {
-        //             $immovable->balance = $balance->balance;
-        //         } else {
-        //             $immovable->balance = 0;
-        //         }
-        //     } else {
-        //         $immovable->balance = 0;
-        //     }
-        // }
+        $immovables = AccountStatusSelectResource::collection(
+            Immovable::where('category', '!=', 'sale')
+                ->whereHas('tenants')
+                ->whereHas('owner')
+                ->get()
+        );
+        foreach ($immovables as $immovable) {
+            $account = AccountStatus::where('immovable_id', $immovable->id)->orderBy('id', 'desc')->first();
+            if ($account) {
+                $balance = PreviousBalance::where('account_status_id', $account->id)->first();
+                if ($balance) {
+                    $immovable->balance = $balance->balance;
+                } else {
+                    $immovable->balance = 0;
+                }
+            } else {
+                $immovable->balance = 0;
+            }
+        }
         return response()->json($immovables);
     }
 

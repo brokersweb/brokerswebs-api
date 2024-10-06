@@ -11,17 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventory_purchases', function (Blueprint $table) {
+        Schema::create('inventory_sales', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('inventory_client_id')->constrained('inventory_clients');
             $table->foreignUuid('user_id')->constrained();
-            $table->foreignUuid('user_approved_id')->nullable()->constrained('users');
-            $table->foreignUuid('supplier_id')->constrained();
             $table->string('serial')->unique();
             $table->text('observation')->nullable();
-            $table->longText('invoice')->nullable();
-            $table->date('purchase_date');
-            $table->decimal('total', 10, 2)->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->date('sale_date');
+            $table->decimal('total', 10, 2);
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventory_purchases');
+        Schema::dropIfExists('inventory_sales');
     }
 };

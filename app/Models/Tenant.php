@@ -12,6 +12,8 @@ use App\Models\Renting\Reference;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tenant extends Model
@@ -84,5 +86,10 @@ class Tenant extends Model
     public function immovables()
     {
         return $this->belongsToMany(Immovable::class, 'immovable_tenant');
+    }
+
+    public function immovable(): HasOne
+    {
+        return $this->hasOne(Immovable::class);
     }
 }

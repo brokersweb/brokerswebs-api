@@ -24,7 +24,7 @@ class ToolLoan extends Model
 
     public function details()
     {
-        return $this->hasMany(ToolLoanDetail::class);
+        return $this->hasOne(ToolLoanDetail::class);
     }
 
     public function serviceOrder()

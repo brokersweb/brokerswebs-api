@@ -152,4 +152,14 @@ class UserController extends Controller
             return $this->errorResponse('Error al actualizar la contraseña', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
+    public function indexStaff()
+    {
+        $users = User::select('id', 'name', 'lastname')->whereHas('roles', function ($query) {
+            $query->where('name', 'Staff');
+        })->get();
+        return $this->successResponse($users);
+    }
 }

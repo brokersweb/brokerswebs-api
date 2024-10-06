@@ -21,6 +21,7 @@ class MaterialImport implements ToModel,  WithHeadingRow, WithValidation
             'name' => $row['nombre'],
             'code' => $row['codigo'],
             'stock' => is_numeric($row['cantidad']) ? (int)$row['cantidad'] : 1,
+            'price_basic' => $row['precio'],
         ]);
     }
 

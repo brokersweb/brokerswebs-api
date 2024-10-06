@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Utils\UtilsController;
 use App\Http\Repositories\Admin\ImmovableRepository;
 use App\Http\Resources\Admin\ImmovableAdminResource;
+use App\Http\Resources\Inventory\ImmovableOperationResource;
 use App\Models\Immovable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -240,5 +241,11 @@ class ImmovableController extends Controller
             DB::rollBack();
             $this->errorResponse('Error al actualizar el inmueble', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function indexOrderServeice()
+    {
+        $immovables = ImmovableOperationResource::collection(Immovable::all());
+        return $this->successResponse($immovables);
     }
 }

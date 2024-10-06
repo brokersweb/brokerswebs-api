@@ -15,12 +15,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('code')->unique();
+            $table->decimal('price_basic', 10, 2)->nullable();
             $table->bigInteger('stock')->default(1);
-            // $table->decimal('unit_price', 10, 2)->nullable();
             $table->string('unit')->nullable()->default('und');
             $table->longText('photo')->nullable();
-            $table->foreignUuid('category_id')->nullable()->constrained();
-            // $table->foreignUuid('supplier_id')->constrained();
             $table->enum('status', ['available', 'unavailable', 'out_stock'])->default('available');
             $table->timestamps();
         });

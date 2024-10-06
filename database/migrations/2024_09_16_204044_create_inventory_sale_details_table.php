@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventory_purchase_details', function (Blueprint $table) {
+        Schema::create('inventory_sale_details', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('inventory_purchase_id')->constrained('inventory_purchases');
+            $table->foreignUuid('inventory_sale_id')->constrained('inventory_sales');
             $table->uuidMorphs('material'); // Material y Herramienta
             $table->bigInteger('qty');
             $table->decimal('price', 10, 2);
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventory_purchase_details');
+        Schema::dropIfExists('inventory_sale_details');
     }
 };

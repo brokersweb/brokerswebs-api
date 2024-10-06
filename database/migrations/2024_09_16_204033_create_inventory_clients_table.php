@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tools', function (Blueprint $table) {
+        Schema::create('inventory_clients', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->string('code')->unique();
+            $table->string('email')->nullable()->unique();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->longText('photo')->nullable();
-            $table->bigInteger('total_quantity')->default(1);
-            $table->double('price', 12,2)->nullable();
-            $table->bigInteger('available_quantity')->default(1);
-            $table->enum('status', ['available', 'unavailable', 'out_stock'])->default('available');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tools');
+        Schema::dropIfExists('inventory_clients');
     }
 };

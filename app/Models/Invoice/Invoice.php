@@ -23,7 +23,8 @@ class Invoice extends Model implements Auditable
         'type',
         'sequential',
         'user_id',
-        'status'
+        'status',
+        'status_dian'
     ];
 
     protected $auditExclude = [

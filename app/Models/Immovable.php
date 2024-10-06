@@ -8,6 +8,8 @@ use App\Models\Base\Gallery;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Immovable extends Model
 {
@@ -32,6 +34,7 @@ class Immovable extends Model
         'co_ownership',
         'immonumber',
         'co_ownership_id',
+        'tenant_id',
         'status',
         'building_company_id',
         'co_adminvalue',
@@ -96,6 +99,11 @@ class Immovable extends Model
     public function tenants()
     {
         return $this->belongsToMany(Tenant::class, 'immovable_tenant');
+    }
+
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
     }
 
 

@@ -10,12 +10,31 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\MaterialImport;
+use App\Traits\AuthorizesRoleOrPermission;
 
 class MaterialController extends Controller
 {
+    use AuthorizesRoleOrPermission;
+
     public function index()
     {
         $materials = MaterialResource::collection(Material::orderBy('created_at', 'desc')->get());
+        return $this->successResponse($materials);
+    }
+
+    public function indexOptions()
+    {
+        $materials = Material::select('id', 'name', 'code')
+            ->where('stock', '>', 0)->where('status', 'available')
+            ->orderBy('created_at', 'desc')->get();
+        return $this->successResponse($materials);
+    }
+
+    public function indexToSale()
+    {
+        $materials = Material::select('id', 'name', 'code', 'photo', 'stock', 'price_basic')
+            ->where('stock', '>', 0)->where('status', 'available')
+            ->orderBy('created_at', 'desc')->get();
         return $this->successResponse($materials);
     }
 
@@ -27,10 +46,11 @@ class MaterialController extends Controller
             'code' => 'required|unique:materials,code',
             'stock' => 'required|integer',
             'unit' => 'nullable',
-            'category_id' => 'nullable',
+            'price_basic' => 'nullable',
             'photo' => 'nullable',
         ]);
 
+        $request['status'] = 'available';
         if ($valid->fails()) {
             return $this->errorResponse($valid->errors(), Response::HTTP_BAD_REQUEST);
         }
@@ -55,7 +75,7 @@ class MaterialController extends Controller
         $valid = Validator::make($request->all(), [
             'name' => 'required',
             'stock' => 'required',
-            'category_id' => 'nullable',
+            'price_basic' => 'nullable',
             'photo' => 'nullable',
         ]);
 
@@ -68,7 +88,7 @@ class MaterialController extends Controller
             $material->update([
                 'name' => $request->name,
                 'stock' => $request->stock,
-                'category_id' => $request->category_id,
+                'price_basic' => $request->price_basic,
                 'photo' => $request->photo,
             ]);
             return $this->successResponseWithMessage('Material actualizado exitosamente', Response::HTTP_OK);
@@ -79,6 +99,8 @@ class MaterialController extends Controller
 
     public function destroy($id)
     {
+        $this->authorizeRoleOrPermission('Administrator');
+
         try {
             $material = Material::find($id);
             $material->delete();

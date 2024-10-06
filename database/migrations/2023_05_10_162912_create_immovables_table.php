@@ -27,6 +27,8 @@ return new class extends Migration
             $table->foreignUuid('immovabletype_id')->constrained('immovabletypes');
             $table->uuid('owner_id'); // Propietario
             $table->enum('category', ['sale', 'rent', 'both'])->default('both');
+            $table->uuid('tenant_id')->nullable(); // Inquilino
+
             // ¿Pertenece a alguna copropiedad?
             $table->enum('co_ownership', ['Si', 'No'])->default('No');
             // Nombre de la copropiedad

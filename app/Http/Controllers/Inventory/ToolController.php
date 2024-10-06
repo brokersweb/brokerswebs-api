@@ -11,8 +11,12 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ToolsImport;
+use App\Traits\AuthorizesRoleOrPermission;
+
 class ToolController extends Controller
 {
+    use AuthorizesRoleOrPermission;
+
     public function index()
     {
         $tools = ToolResource::collection(Tool::orderBy('created_at', 'desc')->get());
@@ -25,7 +29,7 @@ class ToolController extends Controller
             'name' => 'required',
             'code' => 'required|unique:tools,code',
             'total_quantity' => 'required|integer',
-            'category_id' => 'required|exists:categories,id',
+            'price' => 'nullable|numeric',
             'photo' => 'nullable',
         ]);
 
@@ -38,7 +42,7 @@ class ToolController extends Controller
             'code' => $request->code,
             'total_quantity' => $request->total_quantity,
             'available_quantity' => $request->total_quantity,
-            'category_id' => $request->category_id,
+            'price' => $request->price,
             'photo' => $request->photo,
         ]);
 
@@ -60,7 +64,7 @@ class ToolController extends Controller
         $valid = Validator::make($request->all(), [
             'name' => 'required',
             'total_quantity' => 'required|integer',
-            'category_id' => 'required|exists:categories,id',
+            'price' => 'nullable|numeric',
             'photo' => 'nullable',
         ]);
 
@@ -73,7 +77,7 @@ class ToolController extends Controller
         $tool->update([
             'name' => $request->name,
             'total_quantity' => $request->total_quantity,
-            'category_id' => $request->category_id,
+            'price' => $request->price,
             'photo' => $request->photo,
         ]);
 
@@ -82,6 +86,8 @@ class ToolController extends Controller
 
     public function destroy($id)
     {
+        $this->authorizeRoleOrPermission('Administrator');
+
         $tool = Tool::find($id);
         $tool->delete();
         return $this->successResponseWithMessage('Herramienta eliminada exitosamente', Response::HTTP_OK);
@@ -110,12 +116,11 @@ class ToolController extends Controller
             try {
                 Excel::import(new ToolImport, $request->file('file'));
                 return $this->successResponseWithMessage('Herramientas importadas exitosamente', Response::HTTP_OK);
-            }catch (\Exception $e) {
+            } catch (\Exception $e) {
                 return $this->errorResponse($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
 
         return $this->errorResponse('No se ha seleccionado un archivo', Response::HTTP_BAD_REQUEST);
-
     }
 }

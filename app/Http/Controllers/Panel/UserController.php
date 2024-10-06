@@ -16,4 +16,10 @@ class UserController extends Controller
         })->get();
         return $this->successResponse($users);
     }
+
+    public function store()
+    {
+        
+    }
+
 }

@@ -16,8 +16,6 @@ class AccountStatusSelectResource extends JsonResource
             'cownership' => $this->co_ownership_name,
             'rentprice' => $this->rent_price,
             'balance' => $this->balance,
-            'address' => $this->address->street . ',' . $this->address->neighborhood . '.' . $this->address->city . ', ' . $this->address->municipality,
-            'owner' => $this->owner?->name . ' ' . $this->owner?->lastname,
         ];
     }
 }

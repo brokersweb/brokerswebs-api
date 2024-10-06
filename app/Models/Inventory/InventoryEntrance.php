@@ -3,35 +3,29 @@
 namespace App\Models\Inventory;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
-class InventoryPurchase extends Model
+class InventoryEntrance extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'inventory_purchases';
-
     protected $fillable = [
+        'code',
         'user_id',
-        'user_approved_id',
         'supplier_id',
-        'serial',
-        'observation',
         'invoice',
-        'total',
         'status',
+        'confirmed_at',
+        'confirmed_by',
+        'cancelled_at',
+        'cancelled_by',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function userApproved()
-    {
-        return $this->belongsTo(User::class, 'user_approved_id');
     }
 
     public function supplier()
@@ -43,22 +37,17 @@ class InventoryPurchase extends Model
     {
         switch ($this->status) {
 
-            case 'approved':
-                return 'Abrobado';
+            case 'confirmed':
+                return 'Confirmada';
                 break;
 
-            case 'rejected':
-                return 'Rechazado';
+            case 'cancelled':
+                return 'Cancelada';
                 break;
 
             default:
-                return 'Pendiente';
+                return 'Por confirmar';
                 break;
         }
-    }
-
-    public function details()
-    {
-        return $this->hasMany(InventoryPurchaseDetail::class);
     }
 }

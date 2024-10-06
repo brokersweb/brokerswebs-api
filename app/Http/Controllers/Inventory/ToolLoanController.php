@@ -88,10 +88,10 @@ class ToolLoanController extends Controller
     public function show($id)
     {
         try {
-            $tool = ToolLoan::find($id);
+            $tool = ToolLoan::find($id)->load('details');
             return $this->successResponse($tool);
         } catch (\Throwable $th) {
-            return $this->errorResponse('Herramienta no encontrada', Response::HTTP_NOT_FOUND);
+            return $this->errorResponse('Prestamo no encontrado', Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -204,4 +204,7 @@ class ToolLoanController extends Controller
             ->orderBy('created_at', 'desc')->get();
         return $this->successResponse($tools);
     }
+
+
+
 }

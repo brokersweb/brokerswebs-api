@@ -15,16 +15,11 @@ class Tool extends Model
         'code',
         'total_quantity',
         'available_quantity',
-        'category_id',
+        'price',
         'photo',
         'status'
     ];
 
-
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
 
     public function toolLoans()
     {
