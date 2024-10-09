@@ -285,6 +285,12 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
                 Route::get('/', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'index']);
                 Route::post('/', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'store']);
                 Route::get('/{id}', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'show']);
+                Route::get('/details/{id}', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'showDetails']);
+
+                // Servicios
+                Route::get('/services/{id}', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'getOrderServices']);
+                Route::post('/services', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'storeOrderService']);
+                Route::delete('/services/{id}', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'removeService']);
             });
 
             // Entradas
@@ -337,12 +343,6 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             // Categorias
             Route::get('categories', [App\Http\Controllers\Inventory\CategoryController::class, 'index']);
             Route::get('categories/tools', [App\Http\Controllers\Inventory\CategoryController::class, 'tools']);
-
-
-            Route::prefix('entrances')->group(function () {
-                Route::get('/', [App\Http\Controllers\Inventory\InventoryPurchaseController::class, 'index']);
-                Route::post('/', [App\Http\Controllers\Inventory\InventoryPurchaseController::class, 'store']);
-            });
         });
     });
 });

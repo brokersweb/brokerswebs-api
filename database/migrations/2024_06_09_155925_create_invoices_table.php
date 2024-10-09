@@ -23,6 +23,8 @@ return new class extends Migration
             $table->foreignUuid('user_id')->constrained();
             //Estados DIAN: Pendiente , Emitida, Aprobada, Rechazada
             $table->enum('status_dian', ['pending', 'sent', 'approved', 'refused'])->default('pending');
+            $table->enum('status', ['sent','pending','paid','overdue','cancelled','rejected'])->default('pending');
+
             $table->softDeletes();
             $table->timestamps();
         });

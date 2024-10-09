@@ -33,10 +33,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-
-        Schema::table('invoices', function (Blueprint $table) {
-            $table->enum('status', ['sent', 'pending', 'paid', 'overdue', 'cancelled', 'rejected'])->nullable();
-        });
     }
 
     /**
@@ -47,8 +43,5 @@ return new class extends Migration
         Schema::dropIfExists('service_orders');
         Schema::dropIfExists('service_order_services');
 
-        Schema::table('invoices', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
     }
 };
