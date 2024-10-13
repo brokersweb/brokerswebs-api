@@ -189,7 +189,7 @@ class ReferenceController extends Controller
      *     path="/api/references/{id}",
      *     tags={"Reference"},
      *     summary="Eliminar una referencia",
-     *     operationId="reference",
+     *     operationId="referencedel",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

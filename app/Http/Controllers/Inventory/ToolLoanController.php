@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class ToolLoanController extends Controller
 {
@@ -206,5 +207,56 @@ class ToolLoanController extends Controller
     }
 
 
+    public function getToolsLoanTool($id)
+    {
+        $tloan = ToolLoan::find($id)->load('details');
+        if (!$tloan) {
+            return $this->errorResponse('Prestamo no encontrado', Response::HTTP_NOT_FOUND);
+        }
 
+        try {
+
+            return $this->successResponse([
+                'id' => $tloan->id,
+                'code' => $tloan->code,
+                'assigned_id' => $tloan->assigned_id,
+                'loan_date' => $tloan->loan_date,
+                'expected_return_date' => $tloan->expected_return_date,
+                'notes' =>  $tloan->notes,
+                'tools' => $tloan->details,
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->errorResponse(
+                'Error al obtener el prestamo',
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+
+
+    public function generatePDFDetails($id)
+    {
+        $toolLoan = ToolLoan::find($id);
+
+        if (!$toolLoan) {
+            return $this->errorResponse('Prestamo no encontrado', Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+
+            $data = [
+                'created_at' => Carbon::now()->format('Y-m-d'),
+                'code' =>  $toolLoan->code,
+            ];
+
+            $pdf = PDF::loadView('inventory.tool_loan_details', $data);
+            $pdf->setPaper('a4', 'portrait');
+            $pdfContent = $pdf->output();
+            $timestamp = now()->timestamp;
+            $fileName = 'Prestame de herramientas_' . $data['code'] . '_' . $timestamp;
+        } catch (\Exception $e) {
+            return $this->errorResponse('Ocurrió un error mientras se creaba el estado de cuenta', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -19,6 +19,57 @@ class AuthController extends Controller
     {
         $this->repository = $repository;
     }
+
+ /**
+     * @OA\Post(
+     *     path="/api/auth/register",
+     *     summary="Register a new user",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "email", "cellphone", "password", "password_confirmation"},
+     *             @OA\Property(property="name", type="string", maxLength=255, example="John Doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+     *             @OA\Property(property="cellphone", type="string", example="1234567890"),
+     *             @OA\Property(property="phone", type="string", example="0987654321"),
+     *             @OA\Property(property="address", type="string", maxLength=255, example="123 Main St"),
+     *             @OA\Property(property="birthday", type="string", format="date", example="1990-01-01"),
+     *             @OA\Property(property="photo", type="string", nullable=true),
+     *             @OA\Property(property="password", type="string", minLength=8, example="password123"),
+     *             @OA\Property(property="password_confirmation", type="string", example="password123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="User registered successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="John"),
+     *                 @OA\Property(property="lastname", type="string", example="Doe"),
+     *                 @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+     *                 @OA\Property(property="cellphone", type="string", example="1234567890"),
+     *                 @OA\Property(property="phone", type="string", example="0987654321"),
+     *                 @OA\Property(property="address", type="string", example="123 Main St"),
+     *                 @OA\Property(property="birthday", type="string", format="date", example="1990-01-01"),
+     *                 @OA\Property(property="photo", type="string", nullable=true),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Error al registrar el usuario"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
+     */
     public function register(Request $request)
     {
         $rules = [
@@ -51,7 +102,59 @@ class AuthController extends Controller
             return $this->errorResponse('Error al registrar el usuario', Response::HTTP_BAD_REQUEST);
         }
     }
-
+  /**
+     * @OA\Post(
+     *     path="/api/auth/login",
+     *     summary="User login",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", format="email", example="admin@admin.com"),
+     *             @OA\Property(property="password", type="string", example="password123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object",
+     *                 @OA\Property(property="id", type="string", format="uuid", example="9bc91c2f-50bb-43d1-b9f7-c81ed7836bef"),
+     *                 @OA\Property(property="name", type="string", example="Admin"),
+     *                 @OA\Property(property="lastname", type="string", example="Administrator"),
+     *                 @OA\Property(property="email", type="string", format="email", example="admin@admin.com"),
+     *                 @OA\Property(property="cellphone", type="string", example="1234567890"),
+     *                 @OA\Property(property="phone", type="string", nullable=true),
+     *                 @OA\Property(property="address", type="string", nullable=true),
+     *                 @OA\Property(property="birthday", type="string", format="date", nullable=true),
+     *                 @OA\Property(property="photo", type="string", nullable=true),
+     *                 @OA\Property(property="status", type="string", example="active"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="deleted_at", type="string", format="date-time", nullable=true),
+     *                 @OA\Property(property="roles", type="array",
+     *                     @OA\Items(type="object",
+     *                         @OA\Property(property="id", type="integer", example=9),
+     *                         @OA\Property(property="name", type="string", example="Administrator"),
+     *                         @OA\Property(property="guard_name", type="string", example="api"),
+     *                         @OA\Property(property="created_at", type="string", format="date-time"),
+     *                         @OA\Property(property="updated_at", type="string", format="date-time"),
+     *                         @OA\Property(property="pivot", type="object",
+     *                             @OA\Property(property="model_type", type="string", example="App\\Models\\User"),
+     *                             @OA\Property(property="model_id", type="string", format="uuid"),
+     *                             @OA\Property(property="role_id", type="string", format="uuid")
+     *                         )
+     *                     )
+     *                 )
+     *             ),
+     *             @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request"
+     *     )
+     * )
+     */
     public function login(Request $request)
     {
         $rules = [
@@ -80,6 +183,7 @@ class AuthController extends Controller
             'token' => $token
         ]);
     }
+
 
     public function verifyToken(Request $request)
     {

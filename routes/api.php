@@ -321,6 +321,11 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
                 Route::get('/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'show']);
                 Route::put('/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'update']);
                 Route::delete('/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'destroy']);
+
+                Route::get('/pdf-details/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'generatePDFDetails']);
+                Route::get('/edit-details/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'getToolsLoanTool']);
+
+
             });
 
             Route::get('/users/loans', [App\Http\Controllers\Panel\UserController::class, 'index']);

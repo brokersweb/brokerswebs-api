@@ -23,7 +23,7 @@ class ToolImport implements ToModel,  WithHeadingRow, WithValidation
             'code' => $row['codigo'],
             'total_quantity' => is_numeric($row['cantidad']) ? (int)$row['cantidad'] : 1,
             'available_quantity' => is_numeric($row['cantidad']) ? (int)$row['cantidad'] : 1,
-            'price' => is_numeric($row['price']) ? (int)$row['price'] : 1,
+            'price' => is_numeric($row['precio']) ? (int)$row['precio'] : 1,
         ]);
     }
 

@@ -10,6 +10,18 @@ use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
+
+     /**
+     * @OA\Get(
+     *     path="/api/inventory/categories",
+     *     tags={"Categorias"},
+     *     summary="Obtener todas las categorias",
+     *     @OA\Response(
+     *         response="default",
+     *         description="successful operation"
+     *     )
+     * )
+     */
     public function index()
     {
         $categories = Category::orderBy('created_at', 'desc')->get();

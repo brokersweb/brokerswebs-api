@@ -13,7 +13,7 @@ class MaterialStockResource extends JsonResource
             'name' => $this->material->name,
             'staff' => $this->staff->name . ' ' . $this->staff->lastname,
             'code' => $this->material->code,
-            'stock' => $this->material->stock,
+            'stock' => $this->qty,
             'updated_at' => $this->updated_at,
         ];
     }

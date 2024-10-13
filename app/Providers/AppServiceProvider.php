@@ -7,11 +7,13 @@ use App\Models\Immovable;
 use App\Models\Inventory\InventoryEntrance;
 use App\Models\Inventory\OperationMaterial;
 use App\Models\Inventory\ServiceOrder;
+use App\Models\Inventory\ToolLoan;
 use App\Models\User;
 use App\Observers\ImmovableObserver;
 use App\Observers\InventoryEntranceObserver;
 use App\Observers\OperationMaterialObserver;
 use App\Observers\OrderServiceObserver;
+use App\Observers\ToolLoanObserver;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -65,5 +67,7 @@ class AppServiceProvider extends ServiceProvider
 
         ServiceOrder::observe(OrderServiceObserver::class);
         InventoryEntrance::observe(InventoryEntranceObserver::class);
+
+        ToolLoan::observe(ToolLoanObserver::class);
     }
 }

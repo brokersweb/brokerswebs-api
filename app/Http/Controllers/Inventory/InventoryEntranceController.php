@@ -20,6 +20,17 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class InventoryEntranceController extends Controller
 {
+     /**
+     * @OA\Get(
+     *     path="/api/inventory/entries",
+     *     tags={"Ingresos o Entradas"},
+     *     summary="Obtener todas las entradas",
+     *     @OA\Response(
+     *         response="default",
+     *         description="successful operation"
+     *     )
+     * )
+     */
     public function index()
     {
 

@@ -7,6 +7,7 @@ use App\Models\Inventory\InventoryStockMaterial;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Inventory\Material\MaterialStockResource;
+use App\Models\Inventory\Material;
 
 class InventoryStockMaterialController extends Controller
 {
@@ -14,10 +15,8 @@ class InventoryStockMaterialController extends Controller
 
     public function index()
     {
-        $stocks = MaterialStockResource::collection(InventoryStockMaterial::whereHas('material', function ($query) {
-            $query->where('stock', '>', 0);
-        })->get());
-
+        $stocks = MaterialStockResource::collection(InventoryStockMaterial::all());
+        // $stocks = InventoryStockMaterial::all();
         return $this->successResponse($stocks);
     }
 

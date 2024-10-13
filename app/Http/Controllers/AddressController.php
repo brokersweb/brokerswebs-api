@@ -25,7 +25,7 @@ class AddressController extends Controller
     {
         $addresses = Address::all();
         return $this->successResponse($addresses);
-        
+
     }
     /**
      * @OA\Get(
@@ -103,7 +103,7 @@ class AddressController extends Controller
      *     path="/api/addresses/{id}",
      *     tags={"Addresses"},
      *     summary="Eliminar una dirección",
-     *     operationId="addresses/{id}",
+     *     operationId="addressess/{id}",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

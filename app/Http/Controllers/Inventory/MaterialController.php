@@ -16,12 +16,36 @@ class MaterialController extends Controller
 {
     use AuthorizesRoleOrPermission;
 
+
+    /**
+     * @OA\Get(
+     *     path="/api/inventory/materials",
+     *     tags={"Materiales"},
+     *     summary="Obtener todas los materiales",
+     *     operationId="materials",
+     *     @OA\Response(
+     *         response="default",
+     *         description="successful operation"
+     *     )
+     * )
+     */
     public function index()
     {
         $materials = MaterialResource::collection(Material::orderBy('created_at', 'desc')->get());
         return $this->successResponse($materials);
     }
 
+      /**
+     * @OA\Get(
+     *     path="/api/inventory/materials/options",
+     *     tags={"Materiales"},
+     *     summary="Materiales de los select options",
+     *     @OA\Response(
+     *         response="default",
+     *         description="successful operation"
+     *     )
+     * )
+     */
     public function indexOptions()
     {
         $materials = Material::select('id', 'name', 'code')

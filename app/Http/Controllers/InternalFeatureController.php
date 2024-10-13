@@ -56,7 +56,7 @@ class InternalFeatureController extends Controller
     /**
      * @OA\Post(
      *     path="/api/internal-features",
-     *     tags={"store"},
+     *     tags={"InternalFeatures"},
      *     summary="Guardar una caracteristica interna",
      *     operationId="store",
      *     @OA\Response(

@@ -14,7 +14,7 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/panel/addresses": {
+        "/api/addresses": {
             "get": {
                 "tags": [
                     "Addresses"
@@ -25,12 +25,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/addresses/{id}": {
@@ -56,45 +51,415 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/buildings": {
-            "get": {
+                }
+            },
+            "delete": {
                 "tags": [
-                    "Buildings"
+                    "Addresses"
                 ],
-                "summary": "Obtener todas las constructoras",
-                "operationId": "buildings",
-                "responses": {
-                    "default": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/buildings/{id}": {
-            "get": {
-                "tags": [
-                    "Buildings"
-                ],
-                "summary": "Obtener una constructora",
-                "operationId": "buildings/{id}",
+                "summary": "Eliminar una dirección",
+                "operationId": "addressess/{id}",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Id de la constructora",
+                        "description": "Id de la dirección",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user",
+                "operationId": "d764dd091cc4494ae0baf360b03319f3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "cellphone",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "cellphone": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "0987654321"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "123 Main St"
+                                    },
+                                    "birthday": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1990-01-01"
+                                    },
+                                    "photo": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "minLength": 8,
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John"
+                                                },
+                                                "lastname": {
+                                                    "type": "string",
+                                                    "example": "Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "format": "email",
+                                                    "example": "john@example.com"
+                                                },
+                                                "cellphone": {
+                                                    "type": "string",
+                                                    "example": "1234567890"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "0987654321"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "123 Main St"
+                                                },
+                                                "birthday": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "1990-01-01"
+                                                },
+                                                "photo": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error al registrar el usuario"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login",
+                "operationId": "8dcb70df1020986038d098cc08d05dae",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@admin.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "format": "uuid",
+                                                    "example": "9bc91c2f-50bb-43d1-b9f7-c81ed7836bef"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Admin"
+                                                },
+                                                "lastname": {
+                                                    "type": "string",
+                                                    "example": "Administrator"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "format": "email",
+                                                    "example": "admin@admin.com"
+                                                },
+                                                "cellphone": {
+                                                    "type": "string",
+                                                    "example": "1234567890"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "birthday": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "nullable": true
+                                                },
+                                                "photo": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "active"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "deleted_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "nullable": true
+                                                },
+                                                "roles": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 9
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Administrator"
+                                                            },
+                                                            "guard_name": {
+                                                                "type": "string",
+                                                                "example": "api"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "pivot": {
+                                                                "properties": {
+                                                                    "model_type": {
+                                                                        "type": "string",
+                                                                        "example": "App\\\\Models\\\\User"
+                                                                    },
+                                                                    "model_id": {
+                                                                        "type": "string",
+                                                                        "format": "uuid"
+                                                                    },
+                                                                    "role_id": {
+                                                                        "type": "string",
+                                                                        "format": "uuid"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/api/professions": {
+            "get": {
+                "tags": [
+                    "Profesiones"
+                ],
+                "summary": "Obtener todas las profesiones",
+                "operationId": "professions",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Profesiones"
+                ],
+                "summary": "Agregar una profesion",
+                "operationId": "storeProfession",
+                "requestBody": {
+                    "description": "Profession object that needs to be added to the store",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ingeniero"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Ingeniero"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/professions/{id}": {
+            "get": {
+                "tags": [
+                    "Profesiones"
+                ],
+                "summary": "Obtener una profesion",
+                "operationId": "profession",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la profesion",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -106,12 +471,76 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
+                }
+            },
+            "put": {
+                "tags": [
+                    "Profesiones"
+                ],
+                "summary": "Actualizar una profesion",
+                "operationId": "updateProfession",
+                "parameters": [
                     {
-                        "bearer": []
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la profesion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
                     }
-                ]
+                ],
+                "requestBody": {
+                    "description": "Profession object that needs to be added to the store",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Profesiones"
+                ],
+                "summary": "Eliminar una profesion",
+                "operationId": "deleteProfession",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The id of the profession is required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    },
+                    "404": {
+                        "description": "Profession not found"
+                    },
+                    "200": {
+                        "description": "Profession deleted"
+                    }
+                }
             }
         },
         "/api/common-zones": {
@@ -125,12 +554,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/common-zones/{id}": {
@@ -156,62 +580,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/coownerships": {
-            "get": {
-                "tags": [
-                    "Coownerships"
-                ],
-                "summary": "Obtener todas las copropiedades",
-                "operationId": "coownerships",
-                "responses": {
-                    "default": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/coownerships/{id}": {
-            "get": {
-                "tags": [
-                    "Coownerships"
-                ],
-                "summary": "Obtener una copropiedad",
-                "operationId": "coownerships/{id}",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Id de la copropiedad",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "default": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/external-features": {
@@ -225,12 +594,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/external-features/{id}": {
@@ -256,12 +620,47 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
+                }
+            }
+        },
+        "/api/favorites": {
+            "get": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Obtener todos los favoritos",
+                "operationId": "favorites",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
                     }
-                ]
+                }
+            }
+        },
+        "/api/favorites/{id}": {
+            "get": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Obtener un favorito",
+                "operationId": "favorites/{id}",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id del favorito",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
             }
         },
         "/api/immovables": {
@@ -275,12 +674,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/immovable-types": {
@@ -294,12 +688,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/immovable-types/{id}": {
@@ -325,12 +714,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/internal-features": {
@@ -344,16 +728,11 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             },
             "post": {
                 "tags": [
-                    "store"
+                    "InternalFeatures"
                 ],
                 "summary": "Guardar una caracteristica interna",
                 "operationId": "store",
@@ -379,12 +758,7 @@
                             }
                         }
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/internal-features/{id}": {
@@ -410,12 +784,143 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
+                }
+            }
+        },
+        "/api/inventory/categories": {
+            "get": {
+                "tags": [
+                    "Categorias"
+                ],
+                "summary": "Obtener todas las categorias",
+                "operationId": "9d04e2f672c8623cb348ed8b8dfb59b6",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
                     }
-                ]
+                }
+            }
+        },
+        "/api/inventory/entries": {
+            "get": {
+                "tags": [
+                    "Ingresos o Entradas"
+                ],
+                "summary": "Obtener todas las entradas",
+                "operationId": "799f7b6f464ee79b7401c1a465f3dde9",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/api/inventory/materials": {
+            "get": {
+                "tags": [
+                    "Materiales"
+                ],
+                "summary": "Obtener todas los materiales",
+                "operationId": "materials",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/api/inventory/materials/options": {
+            "get": {
+                "tags": [
+                    "Materiales"
+                ],
+                "summary": "Materiales de los select options",
+                "operationId": "21b5cfd20b2cff26407a2a0fb683d252",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/api/buildings": {
+            "get": {
+                "tags": [
+                    "Buildings"
+                ],
+                "summary": "Obtener todas las constructoras",
+                "operationId": "buildings",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/api/buildings/{id}": {
+            "get": {
+                "tags": [
+                    "Buildings"
+                ],
+                "summary": "Obtener una constructora",
+                "operationId": "buildings/{id}",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de la constructora",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/api/coownerships": {
+            "get": {
+                "tags": [
+                    "Coownerships"
+                ],
+                "summary": "Obtener todas las copropiedades",
+                "operationId": "coownerships",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/api/coownerships/{id}": {
+            "get": {
+                "tags": [
+                    "Coownerships"
+                ],
+                "summary": "Obtener una copropiedad",
+                "operationId": "coownerships/{id}",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de la copropiedad",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
             }
         },
         "/api/applicants": {
@@ -429,12 +934,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/applicants/{id}": {
@@ -460,12 +960,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/applications": {
@@ -479,12 +974,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/applications/{id}": {
@@ -510,12 +1000,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/applications/{id}/status": {
@@ -558,12 +1043,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/cosigners": {
@@ -577,12 +1057,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/cosigners/{id}": {
@@ -591,7 +1066,7 @@
                     "Cosigner"
                 ],
                 "summary": "Obtener un codeudor",
-                "operationId": "cosigner/{id}",
+                "operationId": "3459648883f552c97fbb5fa0a16f48ed",
                 "parameters": [
                     {
                         "name": "id",
@@ -608,12 +1083,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             },
             "delete": {
                 "tags": [
@@ -640,188 +1110,7 @@
                     "404": {
                         "description": "Codeudor no encontrado"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/professions": {
-            "get": {
-                "tags": [
-                    "Profession"
-                ],
-                "summary": "Obtener todas las profesiones",
-                "operationId": "professions",
-                "responses": {
-                    "default": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "store"
-                ],
-                "summary": "Agregar una profesion",
-                "operationId": "storeProfession",
-                "requestBody": {
-                    "description": "Profession object that needs to be added to the store",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Ingeniero"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "name": {
-                                            "type": "string",
-                                            "example": "Ingeniero"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/professions/{id}": {
-            "get": {
-                "tags": [
-                    "Profession"
-                ],
-                "summary": "Obtener una profesion",
-                "operationId": "profession",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID de la profesion",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "default": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            },
-            "put": {
-                "tags": [
-                    "Profession"
-                ],
-                "summary": "Actualizar una profesion",
-                "operationId": "updateProfession",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID de la profesion",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "description": "Profession object that needs to be added to the store",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "default": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Profession"
-                ],
-                "summary": "Eliminar una profesion",
-                "operationId": "deleteProfession",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "The id of the profession is required",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid ID supplied"
-                    },
-                    "404": {
-                        "description": "Profession not found"
-                    },
-                    "200": {
-                        "description": "Profession deleted"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/references": {
@@ -835,12 +1124,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             },
             "post": {
                 "tags": [
@@ -892,12 +1176,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/api/references/{id}": {
@@ -923,12 +1202,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             },
             "put": {
                 "tags": [
@@ -992,19 +1266,14 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             },
             "delete": {
                 "tags": [
                     "Reference"
                 ],
                 "summary": "Eliminar una referencia",
-                "operationId": "reference/delete",
+                "operationId": "referencedel",
                 "parameters": [
                     {
                         "name": "id",
@@ -1021,12 +1290,7 @@
                     "default": {
                         "description": "successful operation"
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         }
     },
@@ -1066,6 +1330,80 @@
             }
         }
     },
+    "tags": [
+        {
+            "name": "Addresses",
+            "description": "Addresses"
+        },
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
+            "name": "Profesiones",
+            "description": "Profesiones"
+        },
+        {
+            "name": "CommonZones",
+            "description": "CommonZones"
+        },
+        {
+            "name": "ExternalFeatures",
+            "description": "ExternalFeatures"
+        },
+        {
+            "name": "Favorites",
+            "description": "Favorites"
+        },
+        {
+            "name": "Immovables",
+            "description": "Immovables"
+        },
+        {
+            "name": "ImmovableTypes",
+            "description": "ImmovableTypes"
+        },
+        {
+            "name": "InternalFeatures",
+            "description": "InternalFeatures"
+        },
+        {
+            "name": "Categorias",
+            "description": "Categorias"
+        },
+        {
+            "name": "Ingresos o Entradas",
+            "description": "Ingresos o Entradas"
+        },
+        {
+            "name": "Materiales",
+            "description": "Materiales"
+        },
+        {
+            "name": "Buildings",
+            "description": "Buildings"
+        },
+        {
+            "name": "Coownerships",
+            "description": "Coownerships"
+        },
+        {
+            "name": "Applicant",
+            "description": "Applicant"
+        },
+        {
+            "name": "Application",
+            "description": "Application"
+        },
+        {
+            "name": "Cosigner",
+            "description": "Cosigner"
+        },
+        {
+            "name": "Reference",
+            "description": "Reference"
+        }
+    ],
     "security": {
         "bearer": {
             "type": "apiKey",

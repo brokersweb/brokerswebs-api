@@ -19,7 +19,7 @@ class ProfessionController extends Controller
     /**
      * @OA\Get(
      *     path="/api/professions",
-     *     tags={"Profession"},
+     *     tags={"Profesiones"},
      *     summary="Obtener todas las profesiones",
      *     operationId="professions",
      *     @OA\Response(
@@ -35,7 +35,7 @@ class ProfessionController extends Controller
     /**
      * @OA\Post(
      *     path="/api/professions",
-     *     tags={"store"},
+     *     tags={"Profesiones"},
      *     summary="Agregar una profesion",
      *     operationId="storeProfession",
      *     @OA\Response(
@@ -67,7 +67,7 @@ class ProfessionController extends Controller
     /**
      * @OA\Put(
      *     path="/api/professions/{id}",
-     *     tags={"Profession"},
+     *     tags={"Profesiones"},
      *     summary="Actualizar una profesion",
      *     operationId="updateProfession",
      *     @OA\Parameter(
@@ -103,7 +103,7 @@ class ProfessionController extends Controller
     /**
      * @OA\Get(
      *     path="/api/professions/{id}",
-     *     tags={"Profession"},
+     *     tags={"Profesiones"},
      *     summary="Obtener una profesion",
      *     operationId="profession",
      *     @OA\Parameter(
@@ -129,6 +129,7 @@ class ProfessionController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/professions/{id}",
+     *     tags={"Profesiones"},
      *     summary="Eliminar una profesion",
      *     operationId="deleteProfession",
      *     @OA\Parameter(

@@ -37,7 +37,6 @@ class CosignerController extends Controller
      *     path="/api/cosigners/{id}",
      *     tags={"Cosigner"},
      *     summary="Obtener un codeudor",
-     *     operationId="cosigner",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

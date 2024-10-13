@@ -19,6 +19,7 @@ class ToolLoan extends Model
         'expected_return_date',
         'actual_return_date',
         'status',
+        'code',
         'notes',
     ];
 
