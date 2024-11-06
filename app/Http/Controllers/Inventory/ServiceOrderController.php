@@ -14,12 +14,24 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\Inventory\Orders\OrderServiceResource as OrderOneServiceResource;
+use App\Models\Inventory\InventoryImage;
 use App\Models\Inventory\ServiceOrderDetail;
 
 class ServiceOrderController extends Controller
 {
     use AuthorizesRoleOrPermission;
 
+    /**
+     * @OA\Get(
+     *     path="/api/panel/inventory/order-services/",
+     *     tags={"Orden de servicio"},
+     *     summary="Obtener todas las ordenes de servicio",
+     *     @OA\Response(
+     *         response="default",
+     *         description="successful operation"
+     *     )
+     * )
+     */
     public function index()
     {
         $orders = OrderServiceResource::collection(ServiceOrder::orderBy('created_at', 'desc')->get());
@@ -31,12 +43,17 @@ class ServiceOrderController extends Controller
 
         $valid = Validator::make($request->all(), [
             'assigned_id' => 'required',
-            'client_id' => 'required',
+            'client_id' => 'nullable|required_if:client_type,1',
+            'client_type' => 'required|in:1,2',
+            'client_name'  => 'nullable|required_if:client_type,2',
+            'client_phone' => 'nullable|required_if:client_type,2',
+            'client_address' => 'nullable|required_if:client_type,2',
             'comment' => 'nullable',
             'start_date' => 'required|date',
             'start_time' => 'required',
             'location' => 'nullable',
-            'details' => 'required|array'
+            'details' => 'required|array',
+            'evidences' => 'required|array'
         ]);
 
         if ($valid->fails()) {
@@ -49,11 +66,18 @@ class ServiceOrderController extends Controller
             // Orden
             $start_time = Carbon::createFromFormat('g:i A', $request->start_time);
 
+            $infoExter = $request->client_type == 2 ? json_encode([
+                'name' => $request->client_name,
+                'phone' => $request->client_phone,
+                'address' => $request->client_address,
+            ]) : null;
+
             $order = ServiceOrder::create([
                 'user_id' => Auth::id(),
                 'assigned_id' => $request->assigned_id,
-                'client_id' => $request->client_id,
-                'client_type' => Immovable::class,
+                'client_id' => $request->client_type == 1 ? $request->client_id : null,
+                'client_type' => $request->client_type == 1 ? Immovable::class : null,
+                'exter_client' => $infoExter,
                 'comment' => $request->comment,
                 'start_date' => $request->start_date,
                 'start_time' => $start_time->format('H:i:s'),
@@ -65,6 +89,13 @@ class ServiceOrderController extends Controller
                     'description' => $service['name'],
                     'qty' => 1,
                     'price' => $service['price'],
+                ]);
+            }
+
+            // Create  evidences
+            foreach ($request->evidences as $evidence) {
+                $order->evidences()->create([
+                    'url' => $evidence,
                 ]);
             }
 

@@ -17,8 +17,13 @@ class AccountStatusResource extends JsonResource
             'contract_number' => $this->contract_number,
             'month' => $this->month,
             'year' => $this->year,
-            'status' => $this->status === 'Pending' ? 'Pendiente' : 'Pagado',
+            'status' => $this->getStatus($this->status),
             'created_at' => $this->created_at ? $this->created_at->format('d-m-Y') : null,
         ];
     }
+
+
+
+    
+
 }

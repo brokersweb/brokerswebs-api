@@ -71,6 +71,9 @@ class AccountCollectionRepository extends Repository
         $valid = Validator::make($request->all(), [
             'immovable_id' => 'required|exists:immovables,id',
             'details' => 'required',
+            'payment_condition' => 'required',
+            'nquota' => 'required_if:payment_condition,3',
+            'observation' => 'nullable'
         ]);
         if ($valid->fails()) {
             return $this->errorResponseBadRequest($valid->errors());
@@ -83,7 +86,7 @@ class AccountCollectionRepository extends Repository
             if ($tenant) {
                 $accountCollection = $this->model->create([
                     'immovable_id' => $request->immovable_id,
-                    'tenant_id' => 1,
+                    'tenant_id' => $tenant->id,
                     'contract_number' => '1001',
                     'month' => $month,
                     'year' => $year
@@ -100,7 +103,7 @@ class AccountCollectionRepository extends Repository
                         'cutoff_date' => '2021-01-01'
                     ]);
                 }
-                return $this->successResponse($accountCollection, Response::HTTP_CREATED);
+                return $this->successResponseWithMessage('Cuenta de Cobro generada con éxito.', Response::HTTP_CREATED);
             } else {
                 return $this->errorResponse('No se encontró el inquilino', Response::HTTP_NOT_FOUND);
             }

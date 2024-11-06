@@ -61,4 +61,9 @@ class ToolLoanDetail extends Model
     {
         return $this->belongsTo(Tool::class);
     }
+
+    public function evidences()
+    {
+        return $this->morphMany(InventoryImage::class, 'entityable');
+    }
 }

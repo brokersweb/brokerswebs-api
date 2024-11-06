@@ -19,9 +19,10 @@ class MaterialController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/inventory/materials",
+     *     path="/api/panel/inventory/materials",
      *     tags={"Materiales"},
      *     summary="Obtener todas los materiales",
+     *     security={{"bearerAuth":{}}},
      *     operationId="materials",
      *     @OA\Response(
      *         response="default",

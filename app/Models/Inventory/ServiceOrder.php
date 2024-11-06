@@ -18,6 +18,7 @@ class ServiceOrder extends Model
         'assigned_id',
         'client_type',
         'client_id',
+        'exter_client',
         'status',
         'comment',
         'start_date',
@@ -57,5 +58,11 @@ class ServiceOrder extends Model
     public function client()
     {
         return $this->belongsTo(Immovable::class, 'client_id');
+    }
+
+
+    public function evidences()
+    {
+        return $this->morphMany(InventoryImage::class, 'entityable');
     }
 }

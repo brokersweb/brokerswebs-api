@@ -787,13 +787,13 @@
                 }
             }
         },
-        "/api/inventory/categories": {
+        "/api/panel/inventory/categories": {
             "get": {
                 "tags": [
                     "Categorias"
                 ],
                 "summary": "Obtener todas las categorias",
-                "operationId": "9d04e2f672c8623cb348ed8b8dfb59b6",
+                "operationId": "d69db1bfa5902acc1866bd625d902017",
                 "responses": {
                     "default": {
                         "description": "successful operation"
@@ -801,13 +801,13 @@
                 }
             }
         },
-        "/api/inventory/entries": {
+        "/api/panel/inventory/entries": {
             "get": {
                 "tags": [
                     "Ingresos o Entradas"
                 ],
                 "summary": "Obtener todas las entradas",
-                "operationId": "799f7b6f464ee79b7401c1a465f3dde9",
+                "operationId": "95c59fd5a52b77dd793fe3ee2d9a5e95",
                 "responses": {
                     "default": {
                         "description": "successful operation"
@@ -815,7 +815,7 @@
                 }
             }
         },
-        "/api/inventory/materials": {
+        "/api/panel/inventory/materials": {
             "get": {
                 "tags": [
                     "Materiales"
@@ -826,7 +826,12 @@
                     "default": {
                         "description": "successful operation"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/inventory/materials/options": {
@@ -836,6 +841,20 @@
                 ],
                 "summary": "Materiales de los select options",
                 "operationId": "21b5cfd20b2cff26407a2a0fb683d252",
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/api/panel/inventory/order-services/": {
+            "get": {
+                "tags": [
+                    "Orden de servicio"
+                ],
+                "summary": "Obtener todas las ordenes de servicio",
+                "operationId": "751855d2106b1c9bb63ffa33963700af",
                 "responses": {
                     "default": {
                         "description": "successful operation"
@@ -1378,6 +1397,10 @@
         {
             "name": "Materiales",
             "description": "Materiales"
+        },
+        {
+            "name": "Orden de servicio",
+            "description": "Orden de servicio"
         },
         {
             "name": "Buildings",

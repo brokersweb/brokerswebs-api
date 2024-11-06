@@ -15,7 +15,7 @@ class OrderServiceResource extends JsonResource
             'staff' => $this->staff?->name . ' ' . $this->staff->lastname,
             'comment' => $this->comment,
             'status' => $this->status(),
-            'client' => $this->client?->code . ', ' . $this->client->title,
+            'client' => $this->client?->code . ', ' . $this->client?->title,
             'start_date' => $this->start_date,
             'start_time' => $this->start_time,
             'created_at' => $this->created_at,

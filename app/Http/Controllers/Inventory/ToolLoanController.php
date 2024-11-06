@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Inventory;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Inventory\TooloanResource;
+use App\Models\Inventory\InventoryImage;
 use App\Models\Inventory\Tool;
 use App\Models\Inventory\ToolLoan;
 use App\Models\Inventory\ToolLoanDetail;
@@ -30,6 +31,7 @@ class ToolLoanController extends Controller
             'expected_return_date' => 'required',
             'comment' => 'nullable|max:5000',
             'details' => 'required|array',
+            'evidences' => 'nullable',
         ]);
 
         if ($valid->fails()) {
@@ -58,7 +60,7 @@ class ToolLoanController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $tool = ToolLoan::create([
+        $toolLoan = ToolLoan::create([
             'user_id' => Auth::id(),
             'assigned_id' => $request->assigned_id,
             'loan_date' => Carbon::now(),
@@ -66,7 +68,7 @@ class ToolLoanController extends Controller
             'notes' => $request->comment,
         ]);
 
-        $tool->details()->createMany($request->details);
+        $toolLoan->details()->createMany($request->details);
 
         // Descontamos las herramientas prestadas
         foreach ($tools as $tool) {
@@ -79,6 +81,17 @@ class ToolLoanController extends Controller
             if ($tool->available_quantity == 0) {
                 $tool->update([
                     'status' => 'out_stock',
+                ]);
+            }
+        }
+
+        // Create  evidences
+        if ($request->has('evidences')) {
+            foreach ($request->evidences as $evidence) {
+                InventoryImage::create([
+                    'entityable_id' => $toolLoan->id,
+                    'entityable_type' => ToolLoan::class,
+                    'url' => $evidence,
                 ]);
             }
         }

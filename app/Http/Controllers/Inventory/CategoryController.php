@@ -13,7 +13,7 @@ class CategoryController extends Controller
 
      /**
      * @OA\Get(
-     *     path="/api/inventory/categories",
+     *     path="/api/panel/inventory/categories",
      *     tags={"Categorias"},
      *     summary="Obtener todas las categorias",
      *     @OA\Response(

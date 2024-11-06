@@ -60,4 +60,37 @@ class AccountStatus extends Model implements Auditable
     {
         return $this->morphMany(SeveralLog::class, 'auditable');
     }
+
+    public function getStatus($statu)
+    {
+        $sta = '';
+
+        switch ($statu) {
+            case "created":
+                $sta = 'Creado';
+                break;
+            case "send":
+                $sta = 'Enviado';
+                break;
+            case "pending_payment":
+                $sta = 'Pendiente de pago';
+                break;
+            case "paid":
+                $sta = 'Pagado';
+                break;
+            case "partially_paid":
+                $sta = 'Pago parcial';
+                break;
+            case "overdue":
+                $sta = 'Vencido';
+                break;
+            case "cancelled":
+                $sta = 'Cancelada';
+                break;
+        }
+
+        return $sta;
+    }
+
+
 }

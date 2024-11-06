@@ -142,7 +142,9 @@ class ImmovableController extends Controller
                 'category' => $request->category,
                 'co_ownership' => $request->co_ownership,
                 'immonumber' => $request->immonumber,
-                'status' => 'inactive',
+                'status' => 'active',
+                'image_status' => 'accepted',
+                'video_status' => 'accepted',
                 'terms' => $request->terms,
             ]);
 
@@ -202,7 +204,8 @@ class ImmovableController extends Controller
             if ($request->has('images_gallery')) {
                 foreach ($request->images_gallery as $image) {
                     $immovable->galleries()->create([
-                        'url' => $image
+                        'url' => $image,
+                        'status' => 'accepted',
                     ]);
                 }
             }
@@ -256,7 +259,4 @@ class ImmovableController extends Controller
         }
         return $this->successResponse($immovable);
     }
-
-
-   
 }

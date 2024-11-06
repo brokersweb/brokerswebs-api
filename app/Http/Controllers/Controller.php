@@ -25,7 +25,13 @@ use Illuminate\Routing\Controller as BaseController;
  *         url="http://www.apache.org/licenses/LICENSE-2.0.html"
  *     )
  * )
+ *@OAS\SecurityScheme(
+  *    securityScheme="bearerAuth",
+   *   type="http",
+    *  scheme="bearer"
+  *)
  */
+
 abstract class Controller extends BaseController
 {
     use ApiResponse;

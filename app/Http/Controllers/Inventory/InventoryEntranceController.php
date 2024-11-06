@@ -22,7 +22,7 @@ class InventoryEntranceController extends Controller
 {
      /**
      * @OA\Get(
-     *     path="/api/inventory/entries",
+     *     path="/api/panel/inventory/entries",
      *     tags={"Ingresos o Entradas"},
      *     summary="Obtener todas las entradas",
      *     @OA\Response(

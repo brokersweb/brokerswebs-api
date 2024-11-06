@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tool_loans', function (Blueprint $table) {
-            $table->string('code')->nullable()->after('id');
+        Schema::create('inventory_images', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuidMorphs('entityable');
+            $table->longText('url');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tool_loans', function (Blueprint $table) {
-            $table->dropColumn('code');
-        });
+        Schema::dropIfExists('inventory_images');
     }
 };
