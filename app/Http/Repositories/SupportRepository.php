@@ -75,18 +75,18 @@ class SupportRepository extends Repository
     {
         $data = array(
             'note' => '¡Buenas! Sres. Brokers Soluciones,' . "\n" . 'Se ha registrado un nuevo usuario, por favor revisar y asignarle el rol o permisos requeridos para que pueda interactuar más en la plataforma.' . "\n" . 'Gracias.' . "\n",
-            'name' => 'Nombre: ' . $request->name . ' ' . $request->lastname,
+            'name' => 'Nombre: ' . $request->name,
             'email' => 'Correo: ' . $request->email,
             'cellphone' => 'Celular: ' . $request->cellphone
         );
         $data = implode("\n", $data);
-        $to = 'dbrokerssoluciones@gmail.com';
+        $to = 'soporte@brokerssoluciones.com';
         $subject = 'Área de soporte';
         Mail::raw($data, function ($message) use ($to, $subject) {
             $message->to($to)->subject($subject);
             $message->from('soporte@brokerssoluciones.com', 'Brokers Soluciones|Nuevo usuario');
         });
-        return $this->successResponse('Correo enviado', Response::HTTP_OK);
+        // return $this->successResponse('Correo enviado', Response::HTTP_OK);
     }
 
     // Reply

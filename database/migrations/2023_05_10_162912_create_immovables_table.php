@@ -33,7 +33,7 @@ return new class extends Migration
             $table->enum('co_ownership', ['Si', 'No'])->default('No');
             // Nombre de la copropiedad
             $table->uuid('co_ownership_id')->nullable()->comment('Copropiedad');
-            // Estados: active, inactive, sold, rented, under_maintenance, process_sale, process_renting
+            // Estados: active, inactive, retired, sold, rented, under_maintenance, process_sale, process_renting
             $table->string('status')->nullable();
             $table->uuid('building_company_id')->nullable()->constrained('building_companies');
             $table->string('co_adminvalue')->nullable(); //Valor de administración de la copropiedad

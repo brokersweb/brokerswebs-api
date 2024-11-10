@@ -15,10 +15,12 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         // $roles = ['Guest', 'Administrator', 'Lessor', 'Tenant', 'Staff'];
+        $roles = ['propertymanager', 'accountingmanager'];
 
-        // foreach ($roles as $role) {
-        //     Role::create(['name' => $role]);
-        // }
+
+        foreach ($roles as $role) {
+            Role::create(['name' => $role]);
+        }
 
         // $tenant = User::create([
         //     'name' => 'Inquilino',
@@ -50,8 +52,8 @@ class RoleSeeder extends Seeder
         //     'password' => bcrypt('password'),
         // ]);
 
-        $user = User::where('email', 'Anacampillog987@gmail.com')->first();
-        $role3 = Role::where('name', 'Staff')->first();
-        $user->roles()->attach($role3->id);
+        // $user = User::where('email', 'Anacampillog987@gmail.com')->first();
+        // $role3 = Role::where('name', 'Staff')->first();
+        // $user->roles()->attach($role3->id);
     }
 }

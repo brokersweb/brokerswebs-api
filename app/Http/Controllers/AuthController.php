@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -20,7 +21,7 @@ class AuthController extends Controller
         $this->repository = $repository;
     }
 
- /**
+    /**
      * @OA\Post(
      *     path="/api/auth/register",
      *     summary="Register a new user",
@@ -29,14 +30,11 @@ class AuthController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"name", "email", "cellphone", "password", "password_confirmation"},
+     *             required={"name", "email", "dni","cellphone", "password", "password_confirmation"},
      *             @OA\Property(property="name", type="string", maxLength=255, example="John Doe"),
      *             @OA\Property(property="email", type="string", format="email", example="john@example.com"),
      *             @OA\Property(property="cellphone", type="string", example="1234567890"),
-     *             @OA\Property(property="phone", type="string", example="0987654321"),
-     *             @OA\Property(property="address", type="string", maxLength=255, example="123 Main St"),
-     *             @OA\Property(property="birthday", type="string", format="date", example="1990-01-01"),
-     *             @OA\Property(property="photo", type="string", nullable=true),
+     *             @OA\Property(property="dni", type="string", example="09876543212"),
      *             @OA\Property(property="password", type="string", minLength=8, example="password123"),
      *             @OA\Property(property="password_confirmation", type="string", example="password123")
      *         )
@@ -50,11 +48,8 @@ class AuthController extends Controller
      *                 @OA\Property(property="name", type="string", example="John"),
      *                 @OA\Property(property="lastname", type="string", example="Doe"),
      *                 @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+     *                 @OA\Property(property="dni", type="string", example="09876543212"),
      *                 @OA\Property(property="cellphone", type="string", example="1234567890"),
-     *                 @OA\Property(property="phone", type="string", example="0987654321"),
-     *                 @OA\Property(property="address", type="string", example="123 Main St"),
-     *                 @OA\Property(property="birthday", type="string", format="date", example="1990-01-01"),
-     *                 @OA\Property(property="photo", type="string", nullable=true),
      *                 @OA\Property(property="created_at", type="string", format="date-time"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time")
      *             )
@@ -72,37 +67,43 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        $rules = [
+
+        $valid = Validator::make($request->all(), [
             'name' => 'required|max:255',
-            // 'lastname' => 'required|max:255',
+            'dni' => 'required|min:7',
             'email' => 'required|email|unique:users,email',
             'cellphone' => 'required|unique:users,cellphone',
-            'phone' => 'unique:users,phone',
-            'address' => 'max:255',
-            'birthday' => 'date',
-            'photo' => 'nullable',
             'password' => 'required|min:8',
             'password_confirmation' => 'required|same:password',
-        ];
-        $valid = $this->validate($request, $rules);
-        if ($valid) {
-            $fields = $request->all();
-            $fields['password'] = Hash::make($request->password);
+        ]);
 
-            // Fullname - extract the full name from the name and lastname fields
-            $nameParts = explode(' ', $fields['name']);
-            $fields['name'] = $nameParts[0];
-            $fields['lastname'] = implode(" ", array_slice($nameParts, 1));
 
-            $user = User::create($fields);
-            $user->assignRole('guest');
+        if ($valid->fails()) {
+            return $this->errorResponse($valid->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+
+            $nameParts = explode(' ', $request->name);
+
+            $user = User::create([
+                'name' => $nameParts[0],
+                'lastname' => implode(" ", array_slice($nameParts, 1)),
+                'email' => $request->email,
+                'cellphone' => $request->cellphone,
+                'password' =>  Hash::make($request->password),
+                'dni' => $request->dni,
+                'status' => 'active'
+            ]);
+
             $this->repository->sendRegisterUserEmail($request);
-            return $this->successResponse($user, Response::HTTP_CREATED);
-        } else {
+
+            return $this->successResponseWithMessage('Usuario registrado correctamente, ahora puedes navegar e interactuar en el sistema.', Response::HTTP_CREATED);
+        } catch (\Exception $e) {
             return $this->errorResponse('Error al registrar el usuario', Response::HTTP_BAD_REQUEST);
         }
     }
-  /**
+    /**
      * @OA\Post(
      *     path="/api/auth/login",
      *     summary="User login",
@@ -210,6 +211,37 @@ class AuthController extends Controller
             return $this->errorResponse('Token expirado', Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             return $this->errorResponse('Token no válido', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+    public function resetPassword(Request $request)
+    {
+        $valid = Validator::make($request->all(), [
+            'dni' => 'required|exists:users,dni',
+            'password' => 'required|min:8',
+        ]);
+
+        if ($valid->fails()) {
+            return $this->errorResponse($valid->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+
+            $user = User::where('dni', $request->dni)->first();
+
+            if (!$user) {
+                return $this->errorResponse('El usuario no existe', Response::HTTP_NOT_FOUND);
+            }
+
+            $user->update([
+                'password' => bcrypt($request->password),
+            ]);
+
+            return $this->successResponseWithMessage('Contraseña actualizada con éxito', Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al actualizar la contraseña', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

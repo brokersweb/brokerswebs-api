@@ -75,6 +75,28 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::delete('/{id}', [App\Http\Controllers\ExternalFeatureController::class, 'destroy']);
         });
 
+        Route::group(['prefix' => 'immovable-types'], function () {
+            Route::get('/{id}', [App\Http\Controllers\ImmovableTypeController::class, 'show']);
+            Route::post('/', [App\Http\Controllers\ImmovableTypeController::class, 'store']);
+            Route::put('/{id}', [App\Http\Controllers\ImmovableTypeController::class, 'update']);
+            Route::delete('/{id}', [App\Http\Controllers\ImmovableTypeController::class, 'destroy']);
+        });
+
+        Route::group(['prefix' => 'company-configurations'], function () {
+            Route::post('/', [App\Http\Controllers\CompanyConfigurationController::class, 'store']);
+            Route::put('/{id}', [App\Http\Controllers\CompanyConfigurationController::class, 'update']);
+        });
+
+        Route::group(['prefix' => 'professions'], function () {
+            Route::get('/{id}', [App\Http\Controllers\Base\ProfessionController::class, 'show']);
+            Route::delete('/{id}', [App\Http\Controllers\Base\ProfessionController::class, 'destroy']);
+            Route::post('/', [App\Http\Controllers\Base\ProfessionController::class, 'store']);
+            Route::put('/{id}', [App\Http\Controllers\Base\ProfessionController::class, 'update']);
+        });
+
+
+        // TODO:: ------------------------------------------------USUARIOS------------------------------------------------
+
         Route::group(['prefix' => 'users'], function () {
             Route::get('/staff', [App\Http\Controllers\UserController::class, 'indexStaff']);
 
@@ -87,6 +109,8 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::post('/{id}/roles', [App\Http\Controllers\UserController::class, 'assignRole']);
             Route::put('/{id}/roles-update', [App\Http\Controllers\UserController::class, 'updateRoles']);
         });
+
+        // TODO:: ------------------------------------------------INQUILINOS ------------------------------------------------
 
         Route::group(['prefix' => 'tenants'], function () {
 
@@ -103,20 +127,26 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::get('/immovable-letter/{id}', [App\Http\Controllers\Panel\TenantController::class, 'getImmoLetter']);
         });
 
-        Route::group(['prefix' => 'company-configurations'], function () {
-            Route::post('/', [App\Http\Controllers\CompanyConfigurationController::class, 'store']);
-            Route::put('/{id}', [App\Http\Controllers\CompanyConfigurationController::class, 'update']);
+        // TODO:: ------------------------------------------------ PROPIETARIOS ------------------------------------------------
+
+        Route::group(['prefix' => 'owners'], function () {
+            Route::get('/', [App\Http\Controllers\Panel\OwnerController::class, 'index']);
+            Route::get('/{id}', [App\Http\Controllers\Panel\OwnerController::class, 'show']);
+            Route::post('/', [App\Http\Controllers\Panel\OwnerController::class, 'store']);
+            Route::put('/{id}', [App\Http\Controllers\Panel\OwnerController::class, 'update']);
+
+            Route::post('/import', [App\Http\Controllers\Panel\OwnerController::class, 'importCreate']);
         });
 
 
-        // Unidades
+        // TODO:: UNIDADES O COPROPIEDADES
         Route::group(['prefix' => 'coownerships'], function () {
             Route::get('/', [App\Http\Controllers\Panel\CoownershipController::class, 'index']);
-            // Immovables - rentados
+            // TODO:: Inmuebles - rentados
             Route::get('/rented', [App\Http\Controllers\Panel\CoownershipController::class, 'coownershipsRented']);
             Route::get('/immovables-rented/{id}', [App\Http\Controllers\Panel\CoownershipController::class, 'immovablesRentedByCoownership']);
 
-            // Immovables - vendidos
+            // TODO:: Inmuebles - vendidos
             Route::get('/sold', [App\Http\Controllers\Panel\CoownershipController::class, 'coownershipsSold']);
             Route::get('/immovables-sold/{id}', [App\Http\Controllers\Panel\CoownershipController::class, 'immovablesSoldByCoownership']);
 
@@ -128,6 +158,27 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::put('/{id}', [App\Http\Controllers\Panel\CoownershipController::class, 'update']);
         });
 
+        // TODO:: -------------------------------------- AREA CONTABLE -----------------------------------------
+
+        Route::group(['prefix' => 'account-status'], function () {
+            Route::get('/', [App\Http\Controllers\Panel\AccountStatusController::class, 'index']);
+            Route::get('/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'showMe']);
+            Route::delete('/cancelled/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'cancel']);
+            Route::get('/invoice-sent-customer/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'invoiceSentCustomer']);
+            Route::post('/', [App\Http\Controllers\Panel\AccountStatusController::class, 'store']);
+            Route::get('/download/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'download']);
+        });
+
+        Route::group(['prefix' => 'account-status/inmovables'], function () {
+            Route::get('/form', [App\Http\Controllers\Panel\AccountStatusController::class, 'indexImmovablesAc']);
+        });
+
+        Route::group(['prefix' => 'accounts-collection'], function () {
+            Route::get('/', [App\Http\Controllers\Panel\AccountCollectionController::class, 'index']);
+            Route::get('/select-account-collection', [App\Http\Controllers\Panel\AccountCollectionController::class, 'indexAccountCollection']);
+            Route::post('/', [App\Http\Controllers\Panel\AccountCollectionController::class, 'store']);
+        });
+
         Route::group(['prefix' => 'readjustments'], function () {
             Route::get('/', [App\Http\Controllers\Panel\ReadjustmentController::class, 'index']);
             Route::get('/{id}', [App\Http\Controllers\Panel\ReadjustmentController::class, 'show']);
@@ -135,21 +186,28 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::put('/{id}', [App\Http\Controllers\Panel\ReadjustmentController::class, 'update']);
             Route::delete('/{id}', [App\Http\Controllers\Panel\ReadjustmentController::class, 'destroy']);
         });
-        Route::group(['prefix' => 'immovable-types'], function () {
-            Route::get('/{id}', [App\Http\Controllers\ImmovableTypeController::class, 'show']);
-            Route::post('/', [App\Http\Controllers\ImmovableTypeController::class, 'store']);
-            Route::put('/{id}', [App\Http\Controllers\ImmovableTypeController::class, 'update']);
-            Route::delete('/{id}', [App\Http\Controllers\ImmovableTypeController::class, 'destroy']);
-        });
-        Route::group(['prefix' => 'owners'], function () {
-            Route::get('/', [App\Http\Controllers\Panel\OwnerController::class, 'index']);
-            Route::get('/{id}', [App\Http\Controllers\Panel\OwnerController::class, 'show']);
-            Route::post('/', [App\Http\Controllers\Panel\OwnerController::class, 'store']);
-        });
+
+        // TODO:: ------------------------------------------------ INMUEBLES ----------------------------------------------------------
+
         Route::group(['prefix' => 'immovables'], function () {
             Route::get('/', [App\Http\Controllers\Panel\ImmovableController::class, 'index']);
+
+            // TODO:: Por Categoria
+            Route::get('/byrent', [App\Http\Controllers\Panel\ImmovableController::class, 'indexByRent']);
+            Route::get('/bysell', [App\Http\Controllers\Panel\ImmovableController::class, 'indexBySell']);
+            Route::get('/byboth', [App\Http\Controllers\Panel\ImmovableController::class, 'indexByBoth']);
+
             Route::get('/rented', [App\Http\Controllers\Panel\ImmovableController::class, 'indexRented']);
             Route::get('/sold', [App\Http\Controllers\Panel\ImmovableController::class, 'indexSold']);
+
+            // TODO:: Por Estado
+            Route::get('/under-maintenance', [App\Http\Controllers\Panel\ImmovableController::class, 'indexUnderMaintenance']);
+            Route::get('/inprocess-sale', [App\Http\Controllers\Panel\ImmovableController::class, 'indexProcessSale']);
+            Route::get('/inprocess-renting', [App\Http\Controllers\Panel\ImmovableController::class, 'indexProcessRenting']);
+            Route::get('/unpublished', [App\Http\Controllers\Panel\ImmovableController::class, 'indexUnpublished']);
+            Route::get('/retired', [App\Http\Controllers\Panel\ImmovableController::class, 'indexRetired']);
+
+
             Route::get('/details/{id}', [App\Http\Controllers\Panel\ImmovableController::class, 'show']);
             Route::get('/owners/{id}', [App\Http\Controllers\Panel\ImmovableController::class, 'indexOwner']);
             Route::get('/status-change/{id}', [App\Http\Controllers\Panel\ImmovableController::class, 'statusChange']);
@@ -165,44 +223,18 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::post('/update-basic/{id}', [App\Http\Controllers\Panel\ImmovableController::class, 'updateBasic']);
         });
 
-        Route::group(['prefix' => 'account-status'], function () {
-            Route::get('/', [App\Http\Controllers\Panel\AccountStatusController::class, 'index']);
-            Route::get('/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'showMe']);
-            Route::delete('/cancelled/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'cancel']);
-            Route::get('/invoice-sent-customer/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'invoiceSentCustomer']);
 
-
-            Route::post('/', [App\Http\Controllers\Panel\AccountStatusController::class, 'store']);
-            Route::get('/download/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'download']);
-        });
-
-
-        Route::group(['prefix' => 'account-status/inmovables'], function () {
-            Route::get('/form', [App\Http\Controllers\Panel\AccountStatusController::class, 'indexImmovablesAc']);
-        });
-
-        Route::group(['prefix' => 'accounts-collection'], function () {
-            Route::get('/', [App\Http\Controllers\Panel\AccountCollectionController::class, 'index']);
-            Route::get('/select-account-collection', [App\Http\Controllers\Panel\AccountCollectionController::class, 'indexAccountCollection']);
-            Route::post('/', [App\Http\Controllers\Panel\AccountCollectionController::class, 'store']);
-        });
-        // Contratos Arrendamiento - Docs
+        // TODO:: Contratos Arrendamiento - Docs
         Route::group(['prefix' => 'lease-rentdocs'], function () {
             Route::get('/', [App\Http\Controllers\Panel\LeaseDocContractController::class, 'index']);
-            // Route::get('/select-account-collection', [App\Http\Controllers\Panel\AccountCollectionController::class,'indexAccountCollection']);
             Route::post('/', [App\Http\Controllers\Panel\LeaseDocContractController::class, 'store']);
         });
 
-        Route::group(['prefix' => 'professions'], function () {
-            Route::get('/{id}', [App\Http\Controllers\Base\ProfessionController::class, 'show']);
-            Route::delete('/{id}', [App\Http\Controllers\Base\ProfessionController::class, 'destroy']);
-            Route::post('/', [App\Http\Controllers\Base\ProfessionController::class, 'store']);
-            Route::put('/{id}', [App\Http\Controllers\Base\ProfessionController::class, 'update']);
-        });
 
-        /*
+
+    /*
     |--------------------------------------------------------------------------
-    | Renting Routes
+    | TODO:: ARRENDAMIENTO RUTAS
     |--------------------------------------------------------------------------
     */
         Route::group(['prefix' => 'applications'], function () {
@@ -244,7 +276,7 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
 
 
         /**
-         *  MODULO DE INVENTARIO DE MATERIALES Y HERRAMIENTAS
+         *  TODO:: MODULO DE INVENTARIO DE MATERIALES Y HERRAMIENTAS
          */
 
         Route::prefix('inventory')->group(function () {
@@ -324,8 +356,6 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
 
                 Route::get('/pdf-details/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'generatePDFDetails']);
                 Route::get('/edit-details/{id}', [App\Http\Controllers\Inventory\ToolLoanController::class, 'getToolsLoanTool']);
-
-
             });
 
             Route::get('/users/loans', [App\Http\Controllers\Panel\UserController::class, 'index']);
@@ -381,6 +411,8 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('login', [App\Http\Controllers\AuthController::class, 'login']);
     Route::post('register', [App\Http\Controllers\AuthController::class, 'register']);
     Route::get('check-token', [App\Http\Controllers\AuthController::class, 'verifyToken']);
+    Route::post('password-reset', [App\Http\Controllers\AuthController::class, 'resetPassword']);
+
 });
 
 Route::prefix('supports')->group(function () {
@@ -391,6 +423,7 @@ Route::prefix('supports')->group(function () {
 Route::get('panel/company-configurations', [App\Http\Controllers\CompanyConfigurationController::class, 'index']);
 Route::get('immovable-types', [App\Http\Controllers\ImmovableTypeController::class, 'index']);
 
+// TODO:: INMUEBLES RUTAS PUBLICAS
 Route::prefix('immovables')->group(function () {
     Route::get('/', [App\Http\Controllers\ImmovableController::class, 'index']);
     Route::get('/to-renting/{code}', [App\Http\Controllers\ImmovableController::class, 'getImmovable']);
@@ -461,10 +494,6 @@ Route::group(['prefix' => 'panel', 'middleware' => ['auth']], function () {
         Route::get('/{id}', [App\Http\Controllers\ImmovableRequestController::class, 'show']);
     });
 
-    // Matches /account-status
-    // Route::get('account-status/micropdf-data/{id}', [App\Http\Controllers\Panel\AccountStatusController::class, 'pdfData']);
-    // Route::get('accounts-collection/micropdf-data/{id}', [App\Http\Controllers\Panel\AccountCollectionController::class, 'pdfData']);
-
     Route::prefix('letters')->group(function () {
         Route::get('/admissions', [App\Http\Controllers\Panel\LetterController::class, 'index']);
         Route::get('/exits', [App\Http\Controllers\Panel\LetterController::class, 'index2']);
@@ -474,6 +503,7 @@ Route::group(['prefix' => 'panel', 'middleware' => ['auth']], function () {
         Route::get('/status/{id}', [App\Http\Controllers\Panel\LetterController::class, 'status']);
         Route::get('/{id}', [App\Http\Controllers\Panel\LetterController::class, 'show']);
     });
+
 });
 
 
@@ -493,4 +523,3 @@ Route::group(['prefix' => 'panel', 'middleware' => ['auth']], function () {
 |--------------------------------------------------------------------------
 */
 
-// Route::get('tools/availability', [App\Http\Controllers\Inventory\ToolController::class, 'availableTools']);

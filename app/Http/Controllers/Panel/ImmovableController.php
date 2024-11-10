@@ -8,6 +8,7 @@ use App\Http\Repositories\Admin\ImmovableRepository;
 use App\Http\Resources\Admin\ImmovableAdminResource;
 use App\Http\Resources\Inventory\ImmovableOperationResource;
 use App\Models\Immovable;
+use App\Services\ImmovableService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -20,16 +21,166 @@ class ImmovableController extends Controller
     private ImmovableRepository $immovableRepository;
     private UtilsController $utilsController;
 
-    public function __construct(ImmovableRepository $immovableRepository)
+    protected $immovableService;
+
+    public function __construct(ImmovableRepository $immovableRepository, ImmovableService $immovableService)
     {
         $this->immovableRepository = $immovableRepository;
         $this->utilsController = new UtilsController();
+        $this->immovableService = $immovableService;
     }
     public function index(): JsonResponse
     {
         $immovables = ImmovableAdminResource::collection(Immovable::orderBy('created_at', 'desc')->get());
-
         return $this->successResponse($immovables);
+    }
+
+    // TODO:: POR CATEGORIA - VENTA, RENTA Y AMBOS.
+    public function indexByRent(): JsonResponse
+    {
+        try {
+            $immovables = ImmovableAdminResource::collection(
+                Immovable::where('category', 'rent')
+                    ->where('status', '!=', 'rented')
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+            );
+            return $this->successResponse($immovables);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener inmuebles en renta', Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function indexBySell(): JsonResponse
+    {
+        try {
+            $immovables = ImmovableAdminResource::collection(
+                Immovable::where('category', 'sale')
+                    ->where('status', '!=', 'sold')
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+            );
+
+            return $this->successResponse($immovables);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener inmuebles en venta', Response::HTTP_NOT_FOUND);
+        }
+    }
+    public function indexByBoth(): JsonResponse
+    {
+        try {
+            $immovables = ImmovableAdminResource::collection(
+                Immovable::where('category', 'both')
+                    ->whereNotIn('status', ['sold', 'rented'])
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+            );
+
+            return $this->successResponse($immovables);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener inmuebles disponibles para venta y renta', Response::HTTP_NOT_FOUND);
+        }
+    }
+    public function indexRented(): JsonResponse
+    {
+        try {
+            $immovables = ImmovableAdminResource::collection(
+                Immovable::whereIn('category', ['rent', 'both']) // Incluir ambas categorías
+                    ->where('status', 'rented')
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+            );
+
+            return $this->successResponse($immovables);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener inmuebles rentados', Response::HTTP_NOT_FOUND);
+        }
+    }
+    public function indexSold(): JsonResponse
+    {
+        try {
+            $immovables = ImmovableAdminResource::collection(
+                Immovable::whereIn('category', ['sale', 'both']) // Incluir ambas categorías
+                    ->where('status', 'sold')
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+            );
+
+            return $this->successResponse($immovables);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener inmuebles vendidos', Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    // TODO:: POR ESTADO
+    public function indexUnderMaintenance(): JsonResponse
+    {
+        try {
+            $immovables = ImmovableAdminResource::collection(
+                $this->immovableService->getByStatus('under_maintenance')
+            );
+            return $this->successResponse($immovables);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener inmuebles en mantenimiento', Response::HTTP_NOT_FOUND);
+        }
+    }
+    public function indexProcessSale(): JsonResponse
+    {
+        try {
+            $immovables = ImmovableAdminResource::collection(
+                $this->immovableService->getByStatus('process_sale', [
+                    ['field' => 'category', 'operator' => 'in', 'value' => ['sell', 'both']]
+                ])
+            );
+            return $this->successResponse($immovables);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener inmuebles en proceso de venta', Response::HTTP_NOT_FOUND);
+        }
+    }
+    public function indexProcessRenting(): JsonResponse
+    {
+        try {
+            $immovables = ImmovableAdminResource::collection(
+                Immovable::whereIn('category', ['rent', 'both'])
+                    ->where('status', 'process_renting')
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+            );
+
+            return $this->successResponse($immovables);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener inmuebles en proceso de renta', Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function indexUnpublished(): JsonResponse
+    {
+        try {
+            $immovables = ImmovableAdminResource::collection(
+                Immovable::where('status', 'inactive')
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+            );
+
+            return $this->successResponse($immovables);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener inmuebles no publicados', Response::HTTP_NOT_FOUND);
+        }
+    }
+    // Dado de baja o retirado
+    public function indexRetired(): JsonResponse
+    {
+        try {
+            $immovables = ImmovableAdminResource::collection(
+                Immovable::where('status', 'retired')
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+            );
+
+            return $this->successResponse($immovables);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener inmuebles dados de baja', Response::HTTP_NOT_FOUND);
+        }
     }
 
     // Propietario en especifico
@@ -43,27 +194,7 @@ class ImmovableController extends Controller
         }
     }
 
-    // Solo inmuebles rentados
-    public function indexRented(): JsonResponse
-    {
-        try {
-            $immovable =  ImmovableAdminResource::collection(Immovable::where('status', 'rented')->orderBy('created_at', 'desc')->get());
-            return $this->successResponse($immovable);
-        } catch (\Exception $e) {
-            return $this->errorResponse('Immovables not found', Response::HTTP_NOT_FOUND);
-        }
-    }
 
-    // Solo inmuebles vendidos
-    public function indexSold(): JsonResponse
-    {
-        try {
-            $immovable =  ImmovableAdminResource::collection(Immovable::where('status', 'sold')->orderBy('created_at', 'desc')->get());
-            return $this->successResponse($immovable);
-        } catch (\Exception $e) {
-            return $this->errorResponse('Immovables not found', Response::HTTP_NOT_FOUND);
-        }
-    }
 
     public function statusChange($id)
     {

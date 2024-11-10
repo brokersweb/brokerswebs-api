@@ -77,14 +77,13 @@ class OwnerRepository extends Repository
             'bank_name' => 'nullable',
             'account_type' => 'nullable|in:Ahorros,Corriente',
             'account_number' => 'nullable|integer',
-            'birthdate' => 'nullable|date',
+            'birthdate' => 'required|date',
             'gender' => 'nullable|in:Masculino,Femenino,Otro',
             'civil_status' => 'nullable|in:Soltero,Casado,Unión libre,Viudo,Divorciado',
-            'dependent_people' => 'nullable|integer|max:10',
+            'dependent_people' => 'nullable',
             'profession' => 'nullable',
-            'dni_file' => 'nullable',
+            'dni_file' => 'required',
             'photo' => 'nullable',
-            'comment' => 'nullable|max:255',
         ]);
 
         if ($valid->fails()) {
@@ -116,8 +115,23 @@ class OwnerRepository extends Repository
             'profession' => $request->profession,
             'dni_file' => $request->dni_file,
             'photo' => $request->photo,
-            'comment' => $request->comment,
         ]);
+
+        // Create User Profile
+        $user = User::create([
+            'name' => $request->name,
+            'lastname' => $request->lastname,
+            'cellphone' => $request->cellphone,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address,
+            'birthday' => $request->birthdate,
+            'dni' => $request->dni,
+            'status' => 'Active',
+            'password' => bcrypt('Password123*'),
+        ]);
+
+
         return $this->successResponseWithMessage('Propietario creado');
     }
 

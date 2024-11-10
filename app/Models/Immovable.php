@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\AccountsCollection\AccountCollection;
 use App\Models\AccountsStatus\AccountStatus;
 use App\Models\Base\Favorite;
 use App\Models\Base\Gallery;
@@ -85,21 +86,12 @@ class Immovable extends Model
         return $this->hasMany(ImmovableRequest::class);
     }
 
-    // public function owners()
-    // {
-    //     return $this->belongsToMany(Owner::class);
-    // }
 
     public function owner()
     {
         return $this->belongsTo(Owner::class, 'owner_id');
     }
 
-
-    public function tenants()
-    {
-        return $this->belongsToMany(Tenant::class, 'immovable_tenant');
-    }
 
     public function tenant(): BelongsTo
     {
@@ -109,12 +101,17 @@ class Immovable extends Model
 
     public function hasTenant(): bool
     {
-        return $this->tenants()->exists();
+        return $this->tenant()->exists();
     }
 
     public function accountstatus()
     {
         return $this->hasMany(AccountStatus::class, 'immovable_id');
+    }
+
+    public function accountCollection()
+    {
+        return $this->hasMany(AccountCollection::class, 'immovable_id');
     }
 
     public function favorites()

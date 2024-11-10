@@ -16,6 +16,10 @@ class RoleResource extends JsonResource
             $name = 'Propietario';
         } else if ($name == 'Tenant') {
             $name = 'Inquilino';
+        } else if ($name == 'PropertyManager') {
+            $name = 'Asesor Inmobiliario';
+        } else if ($name == 'AccountingManager') {
+            $name = 'Administrador Contable';
         } else {
             $name = 'Invitado';
         }
