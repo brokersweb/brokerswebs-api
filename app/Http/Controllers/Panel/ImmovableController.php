@@ -41,7 +41,7 @@ class ImmovableController extends Controller
         try {
             $immovables = ImmovableAdminResource::collection(
                 Immovable::where('category', 'rent')
-                    ->where('status', '!=', 'rented')
+                    ->where('status', '!=', 'rented')->where('status', '!=', 'retired')
                     ->orderBy('created_at', 'desc')
                     ->get()
             );
@@ -56,7 +56,7 @@ class ImmovableController extends Controller
         try {
             $immovables = ImmovableAdminResource::collection(
                 Immovable::where('category', 'sale')
-                    ->where('status', '!=', 'sold')
+                    ->where('status', '!=', 'sold')->where('status', '!=', 'retired')
                     ->orderBy('created_at', 'desc')
                     ->get()
             );
@@ -71,7 +71,7 @@ class ImmovableController extends Controller
         try {
             $immovables = ImmovableAdminResource::collection(
                 Immovable::where('category', 'both')
-                    ->whereNotIn('status', ['sold', 'rented'])
+                    ->whereNotIn('status', ['sold', 'rented'])->where('status', '!=', 'retired')
                     ->orderBy('created_at', 'desc')
                     ->get()
             );
@@ -81,12 +81,14 @@ class ImmovableController extends Controller
             return $this->errorResponse('Error al obtener inmuebles disponibles para venta y renta', Response::HTTP_NOT_FOUND);
         }
     }
+    // TODO:: Inmuebles Rentados - Que no pertenecen a una Unidad.
     public function indexRented(): JsonResponse
     {
         try {
             $immovables = ImmovableAdminResource::collection(
-                Immovable::whereIn('category', ['rent', 'both']) // Incluir ambas categorías
+                Immovable::whereIn('category', ['rent', 'both'])
                     ->where('status', 'rented')
+                    ->whereNull('co_ownership_id')
                     ->orderBy('created_at', 'desc')
                     ->get()
             );
@@ -96,12 +98,14 @@ class ImmovableController extends Controller
             return $this->errorResponse('Error al obtener inmuebles rentados', Response::HTTP_NOT_FOUND);
         }
     }
+
     public function indexSold(): JsonResponse
     {
         try {
             $immovables = ImmovableAdminResource::collection(
-                Immovable::whereIn('category', ['sale', 'both']) // Incluir ambas categorías
+                Immovable::whereIn('category', ['sale', 'both'])
                     ->where('status', 'sold')
+                    ->whereNull('co_ownership_id')
                     ->orderBy('created_at', 'desc')
                     ->get()
             );
@@ -128,9 +132,10 @@ class ImmovableController extends Controller
     {
         try {
             $immovables = ImmovableAdminResource::collection(
-                $this->immovableService->getByStatus('process_sale', [
-                    ['field' => 'category', 'operator' => 'in', 'value' => ['sell', 'both']]
-                ])
+                Immovable::whereIn('category', ['sale', 'both'])
+                    ->where('status', 'process_sale')
+                    ->orderBy('created_at', 'desc')
+                    ->get()
             );
             return $this->successResponse($immovables);
         } catch (\Exception $e) {

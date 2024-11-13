@@ -10,12 +10,13 @@ class ImmovableAdminResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'avatar' => $this->main_image,
             'title' => $this->title,
             'code' => $this->code,
             'enrollment' => $this->enrollment,
             'type' => $this->immovableType?->description,
             'city' => $this->address?->city,
-            'sector' => $this->address?->neighborhood,
+            'sector' => $this->address?->neighborhood ? $this->address?->neighborhood : 'No asignado',
             'street' => $this->address?->street,
             'coownership' => $this->coownership?->name ?  $this->coownership?->name : 'No asignada',
             'total_area' => $this->details?->total_area ?? 0,
@@ -24,6 +25,7 @@ class ImmovableAdminResource extends JsonResource
             'rent_price' => $this->rent_price,
             'category' => $this->category,
             'owner_holder' => $this->owner?->dni ?? 'No asignado',
+            'owner_name' => $this->owner?->name ?? 'No asignado',
             'created_at' => $this->created_at ? $this->created_at->format('d-m-Y') : null,
             'status' => $this->status,
             'hasTenant' => $this->hasTenant(),
