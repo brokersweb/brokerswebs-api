@@ -80,7 +80,7 @@ class AccountCollectionRepository extends Repository
         }
         $immovable = Immovable::find($request->immovable_id);
         // get tenant where type is holder
-        $tenant =  $immovable->tenants()->where('type', 'holder')->first();
+        $tenant =  $immovable->tenant()->where('type', 'holder')->first();
         $details = $request->details;
         try {
             if ($tenant) {

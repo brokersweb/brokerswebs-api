@@ -10,6 +10,8 @@ class InventoryClient extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $table = 'clients';
+
     protected $fillable = [
         'name',
         'phone',

@@ -3,6 +3,7 @@
 namespace App\Http\Repositories\Renting;
 
 use App\Http\Controllers\Utils\UtilsController as UtilsUtilsController;
+use App\Models\Immovable;
 use App\Models\ImmovableTenant;
 use App\Models\Renting\Applicant as RentingApplicant;
 use App\Models\Tenant;
@@ -195,16 +196,20 @@ class ApplicantRepository extends Repository
                             'type' => 'holder'
                         ]);
                         // Relación con el inmueble
-                        ImmovableTenant::create([
-                            'immovable_id' => $request->immovable_id,
+                        $immovable = Immovable::find($request->immovable_id);
+                        $immovable->update([
                             'tenant_id' => $tenant->id,
                         ]);
+                        // ImmovableTenant::create([
+                        //     'immovable_id' => $request->immovable_id,
+                        //     'tenant_id' => $tenant->id,
+                        // ]);
                         // Referencias , Tipo de trabajo: Inquilino
-                        $this->utilsController->storeReferences($request, $tenant);
+                        // $this->utilsController->storeReferences($request, $tenant);
                         $this->saveJobTypeApplicant($request, $tenant);
 
                         // Codeudores
-                        $this->cosignerRepository->storeCosigners($request, $tenant);
+                        // $this->cosignerRepository->storeCosigners($request, $tenant);
 
                         DB::commit();
                         return $this->successResponseWithMessage('Inquilino agregado correctamente', Response::HTTP_CREATED);

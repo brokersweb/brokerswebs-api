@@ -39,7 +39,7 @@ class LeaseDocContractRepository extends Repository
         }
 
         $immovable = Immovable::find($request->immovable_id);
-        $tenant = $immovable->tenants()->where('tenant_id', $request->tenant_id)->first();
+        $tenant = $immovable->tenant()->where('tenant_id', $request->tenant_id)->first();
 
         // $cosigner_tenant = $tenant->pivot->cosigner;
         // $cosigners = json_encode([

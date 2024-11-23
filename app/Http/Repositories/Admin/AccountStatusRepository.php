@@ -200,7 +200,7 @@ class AccountStatusRepository extends Repository
     {
         $immovables = AccountStatusSelectResource::collection(
             Immovable::where('category', '!=', 'sale')
-                ->whereHas('tenants')
+                ->whereHas('tenant')
                 ->whereHas('owner')
                 ->get()
         );

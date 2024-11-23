@@ -197,6 +197,11 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::get('/bysell', [App\Http\Controllers\Panel\ImmovableController::class, 'indexBySell']);
             Route::get('/byboth', [App\Http\Controllers\Panel\ImmovableController::class, 'indexByBoth']);
 
+            // Por unidad
+            Route::get('/coownership/rented', [App\Http\Controllers\Panel\ImmovableController::class, 'indexRentedWithCoOwnership']);
+            Route::get('/coownership/sold', [App\Http\Controllers\Panel\ImmovableController::class, 'indexSoldWithCoOwnership']);
+
+
             Route::get('/rented', [App\Http\Controllers\Panel\ImmovableController::class, 'indexRented']);
             Route::get('/sold', [App\Http\Controllers\Panel\ImmovableController::class, 'indexSold']);
 
@@ -232,11 +237,16 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
 
 
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | TODO:: ARRENDAMIENTO RUTAS
     |--------------------------------------------------------------------------
     */
+
+        Route::group(['prefix' => 'leases'], function () {
+            Route::post('/', [App\Http\Controllers\Renting\RentalContractController::class, 'store']);
+        });
+
         Route::group(['prefix' => 'applications'], function () {
             Route::get('/', [App\Http\Controllers\Renting\ApplicationController::class, 'index']);
             Route::get('/{id}', [App\Http\Controllers\Renting\ApplicationController::class, 'show']);
@@ -258,6 +268,8 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
 
         Route::group(['prefix' => 'cosigners'], function () {
             Route::get('/', [App\Http\Controllers\Renting\CosignerController::class, 'index']);
+            Route::post('/', [App\Http\Controllers\Renting\CosignerController::class, 'store']);
+
             Route::get('/{id}', [App\Http\Controllers\Renting\CosignerController::class, 'show']);
             Route::delete('/{id}', [App\Http\Controllers\Renting\CosignerController::class, 'destroy']);
         });
@@ -412,7 +424,6 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('register', [App\Http\Controllers\AuthController::class, 'register']);
     Route::get('check-token', [App\Http\Controllers\AuthController::class, 'verifyToken']);
     Route::post('password-reset', [App\Http\Controllers\AuthController::class, 'resetPassword']);
-
 });
 
 Route::prefix('supports')->group(function () {
@@ -503,7 +514,6 @@ Route::group(['prefix' => 'panel', 'middleware' => ['auth']], function () {
         Route::get('/status/{id}', [App\Http\Controllers\Panel\LetterController::class, 'status']);
         Route::get('/{id}', [App\Http\Controllers\Panel\LetterController::class, 'show']);
     });
-
 });
 
 
@@ -522,4 +532,3 @@ Route::group(['prefix' => 'panel', 'middleware' => ['auth']], function () {
 | Only Auth , Propietario y Admin && Panel - Routes
 |--------------------------------------------------------------------------
 */
-

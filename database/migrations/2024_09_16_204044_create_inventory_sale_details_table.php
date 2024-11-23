@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventory_sale_details', function (Blueprint $table) {
+        Schema::create('sale_details', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('inventory_sale_id')->constrained('inventory_sales');
-            $table->uuidMorphs('material'); // Material y Herramienta
+            $table->foreignUuid('sale_id')->constrained('sales');
+            $table->uuidMorphs('product'); // Material y Herramienta
             $table->bigInteger('qty');
-            $table->decimal('price', 10, 2);
-            $table->decimal('total', 10, 2)->nullable();
+            $table->decimal('price', 10, 2)->nullable()->default(0);
+            $table->decimal('total', 10, 2)->default(0);
             $table->timestamps();
         });
     }

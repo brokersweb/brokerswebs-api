@@ -10,12 +10,16 @@ class InventorySale extends Model
 {
     use HasFactory,HasUuids;
 
+    protected $table = 'sales';
+
     protected $fillable = [
-        'inventory_client_id',
+        'client_id',
         'user_id',
+        'tenant_id',
+        'immovable_id',
         'serial',
         'total',
         'observation',
-        'sale_date'
+        'status',
     ];
 }

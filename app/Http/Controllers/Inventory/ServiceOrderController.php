@@ -53,7 +53,8 @@ class ServiceOrderController extends Controller
             'start_time' => 'required',
             'location' => 'nullable',
             'details' => 'required|array',
-            'evidences' => 'required|array'
+            'evidences' => 'required|array',
+            'materials' => 'nullable|array',
         ]);
 
         if ($valid->fails()) {
@@ -98,6 +99,9 @@ class ServiceOrderController extends Controller
                     'url' => $evidence,
                 ]);
             }
+
+            // Create Sales
+
 
             DB::commit();
 

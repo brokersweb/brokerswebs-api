@@ -10,12 +10,12 @@ class InventorySaleDetail extends Model
 {
     use HasFactory,HasUuids;
 
-    protected $table = 'inventory_sale_details';
+    protected $table = 'sale_details';
 
     protected $fillable = [
-        'inventory_sale_id',
-        'material_id',
-        'material_type',
+        'sale_id',
+        'product_id',
+        'product_type',
         'qty',
         'price',
         'total',

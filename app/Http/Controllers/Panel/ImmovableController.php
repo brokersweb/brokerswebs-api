@@ -81,7 +81,40 @@ class ImmovableController extends Controller
             return $this->errorResponse('Error al obtener inmuebles disponibles para venta y renta', Response::HTTP_NOT_FOUND);
         }
     }
-    // TODO:: Inmuebles Rentados - Que no pertenecen a una Unidad.
+    // TODO:: Inmuebles Rentados - Por Unidad.
+    public function indexRentedWithCoOwnership(): JsonResponse
+    {
+        try {
+            $immovables = ImmovableAdminResource::collection(
+                Immovable::whereIn('category', ['rent', 'both'])
+                    ->where('status', 'rented')
+                    ->whereNotNull('co_ownership_id')
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+            );
+
+            return $this->successResponse($immovables);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener inmuebles rentados', Response::HTTP_NOT_FOUND);
+        }
+    }
+    public function indexSoldWithCoOwnership(): JsonResponse
+    {
+        try {
+            $immovables = ImmovableAdminResource::collection(
+                Immovable::whereIn('category', ['sale', 'both'])
+                    ->where('status', 'sold')
+                    ->whereNotNull('co_ownership_id')
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+            );
+
+            return $this->successResponse($immovables);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener inmuebles vendidos', Response::HTTP_NOT_FOUND);
+        }
+    }
+
     public function indexRented(): JsonResponse
     {
         try {
@@ -115,6 +148,8 @@ class ImmovableController extends Controller
             return $this->errorResponse('Error al obtener inmuebles vendidos', Response::HTTP_NOT_FOUND);
         }
     }
+
+
 
     // TODO:: POR ESTADO
     public function indexUnderMaintenance(): JsonResponse

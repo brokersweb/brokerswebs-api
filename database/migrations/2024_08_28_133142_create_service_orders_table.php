@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->foreignUuid('user_id')->constrained();
             $table->foreignUuid('assigned_id')->constrained('users');
-            $table->uuidMorphs('client');
+            $table->foreignUuid('client_id')->nullable();
+            $table->foreignUuid('tenant_id')->nullable()->constrained('tenants');
+            $table->foreignUuid('immovable_id')->nullable()->constrained('immovables');
             $table->enum('status', ['opened', 'in_progress', 'completed','cancelled'])->default('opened');
             $table->text('comment')->nullable();
             $table->date('start_date');

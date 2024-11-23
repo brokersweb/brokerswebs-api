@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventory_sales', function (Blueprint $table) {
+        Schema::create('sales', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('inventory_client_id')->constrained('inventory_clients');
+            $table->foreignUuid('client_id')->nullable()->constrained('clients');
             $table->foreignUuid('user_id')->constrained();
+            $table->foreignUuid('tenant_id')->nullable()->constrained('tenants');
+            $table->foreignUuid('immovable_id')->nullable()->constrained('immovables');
             $table->string('serial')->unique();
             $table->text('observation')->nullable();
-            $table->date('sale_date');
+            $table->enum('status', ['created', 'send', 'paid', 'partially_paid', 'overdue', 'cancelled'])->default('created');
             $table->decimal('total', 10, 2);
             $table->timestamps();
         });
