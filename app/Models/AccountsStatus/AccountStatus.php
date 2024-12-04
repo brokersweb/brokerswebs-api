@@ -33,7 +33,9 @@ class AccountStatus extends Model implements Auditable
         'payment_observation',
         'observation',
         'amount_paid',
-        'status'
+        'status',
+        'voucher',
+        'vouchernum'
     ];
 
     public function immovable()
@@ -51,10 +53,7 @@ class AccountStatus extends Model implements Auditable
         return $this->hasMany(AccountStatusDetail::class, 'accountstatus_id');
     }
 
-    public function balance()
-    {
-        return $this->belongsTo(PreviousBalance::class);
-    }
+
 
     public function logs()
     {
@@ -92,5 +91,8 @@ class AccountStatus extends Model implements Auditable
         return $sta;
     }
 
-
+    public function previousbalance()
+    {
+        return $this->belongsTo(PreviousBalance::class, 'accountable');
+    }
 }

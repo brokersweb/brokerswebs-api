@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('previous_balances', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('account_status_id')->constrained('account_status')->onDelete('cascade');
-            $table->decimal('balance', 12, 2)->comment('Saldo anterior');
+            // $table->foreignUuid('account_status_id')->constrained('account_status')->onDelete('cascade');
+            $table->uuidMorphs('accountable');
+            $table->decimal('balance', 12, 2)->comment('Saldo Pendiente');
             $table->timestamps();
         });
     }

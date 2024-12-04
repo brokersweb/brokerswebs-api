@@ -20,7 +20,8 @@ class Application extends Model
         'applicant_id',
         'status',
         'comment',
-        'priority'
+        'priority',
+        'use_property'
     ];
 
     protected $hidden = [

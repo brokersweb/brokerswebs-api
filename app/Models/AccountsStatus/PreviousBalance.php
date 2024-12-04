@@ -12,12 +12,14 @@ class PreviousBalance extends Model
 
     protected $table = 'previous_balances';
     protected $fillable = [
-        'account_status_id',
+        'accountable_id',
+        'accountable_type',
         'balance'
     ];
 
-    public function accountStatu()
+
+    public function accountable()
     {
-        return $this->hasOne(AccountStatus::class, 'id', 'account_status_id');
+        return $this->morphTo();
     }
 }

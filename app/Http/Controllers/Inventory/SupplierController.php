@@ -23,11 +23,12 @@ class SupplierController extends Controller
 
         $valid = Validator::make($request->all(), [
             'name' => 'required',
-            'nit' => 'required|unique:suppliers,nit',
+            'nit' => 'nullable|unique:suppliers,nit',
             'contact_person' => 'required',
             'email' => 'nullable|email',
             'phone' => 'nullable',
             'address' => 'nullable',
+            'dni' => 'nullable|unique:suppliers,dni',
             'photo' => 'nullable',
         ]);
 
@@ -35,7 +36,7 @@ class SupplierController extends Controller
             return $this->errorResponse($valid->errors(), Response::HTTP_BAD_REQUEST);
         }
 
-        $supplier = Supplier::create($request->all());
+        Supplier::create($request->all());
 
         return $this->successResponseWithMessage('Proveeder agregado exitosamente', Response::HTTP_CREATED);
     }
@@ -55,8 +56,12 @@ class SupplierController extends Controller
         $valid = Validator::make($request->all(), [
             'name' => 'required',
             'nit' => [
-                'required',
+                'nullable',
                 Rule::unique('suppliers', 'nit')->ignore($id),
+            ],
+            'dni' => [
+                'nullable',
+                Rule::unique('suppliers', 'dni')->ignore($id),
             ],
             'contact_person' => 'required',
             'email' => 'nullable|email',

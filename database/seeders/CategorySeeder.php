@@ -13,22 +13,19 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $tools = [
-            'Medición y Nivelación',
-            'Corte',
-            'Fijación',
-            'Demolición',
-            'Eléctricas y de Potencia',
-            'Instalación',
-            'Equipos de Seguridad',
-            'Acabado',
-            'Medición Avanzada',
-            'Construcción Especializadas'
+            'Ferretería',
+            'Electricidad',
+            'Carpintería',
+            'Construcción',
+            'Playa',
+            'Plomería'
         ];
 
         foreach ($tools as $tool) {
             \App\Models\Inventory\Category::create([
                 'name' => $tool,
-                'type' => 'tool'
+                'type' => 'inventary',
+                'subtype' => 'material'
             ]);
         }
     }

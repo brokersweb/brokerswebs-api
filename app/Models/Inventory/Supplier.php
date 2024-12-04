@@ -16,6 +16,7 @@ class Supplier extends Model
         'contact_person',
         'address',
         'phone',
+        'dni',
         'email',
         'photo',
         'status'

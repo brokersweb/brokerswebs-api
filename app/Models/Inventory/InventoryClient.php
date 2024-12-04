@@ -15,6 +15,9 @@ class InventoryClient extends Model
     protected $fillable = [
         'name',
         'phone',
+        'rut',
+        'nit',
+        'dni',
         'email',
         'address',
         'status',

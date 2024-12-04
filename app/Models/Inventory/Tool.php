@@ -17,7 +17,9 @@ class Tool extends Model
         'available_quantity',
         'price',
         'photo',
-        'status'
+        'status',
+        'conditions',
+        'operative_status',
     ];
 
 

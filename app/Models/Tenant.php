@@ -20,28 +20,48 @@ class Tenant extends Model
 {
     use HasUuids, HasFactory, SoftDeletes;
     protected $table = 'tenants';
+
     protected $fillable = [
+        'dependent_people',
+        'photo',
         'name',
         'lastname',
         'document_type',
         'dni',
         'expedition_place',
         'expedition_date',
-        'email',
         'cellphone',
         'phone',
-        'address',
-        'bank_account',
+        'working_type',
         'birthdate',
         'gender',
-        'type',
         'civil_status',
-        'dependent_people',
         'profession',
+        'email',
+        'address',
+        'city_birth',
+        'nationality',
+        'neighborhood',
+        'city_municipality',
+        'department',
+        'country',
+        'professional_title',
+        'occupation',
+        'main_economic_activity',
+        'detail_economic_activity',
+        'facebook',
+        'twitter',
+        'has_realestate',
+        'property_address',
+        'property_city',
+        'has_vehicles',
+        'brand',
+        'line',
+        'model',
+        'has_pledge',
         'dni_file',
-        'photo',
-        'working_type'
     ];
+
 
     public function references()
     {

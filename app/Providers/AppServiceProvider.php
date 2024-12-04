@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Helpers\NumberToWords;
+use App\Models\Contracts\RentalContract;
 use App\Models\Immovable;
 use App\Models\Inventory\InventoryEntrance;
 use App\Models\Inventory\OperationMaterial;
@@ -13,6 +14,7 @@ use App\Observers\ImmovableObserver;
 use App\Observers\InventoryEntranceObserver;
 use App\Observers\OperationMaterialObserver;
 use App\Observers\OrderServiceObserver;
+use App\Observers\RentalContractObserver;
 use App\Observers\ToolLoanObserver;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
@@ -69,5 +71,7 @@ class AppServiceProvider extends ServiceProvider
         InventoryEntrance::observe(InventoryEntranceObserver::class);
 
         ToolLoan::observe(ToolLoanObserver::class);
+
+        RentalContract::observe(RentalContractObserver::class);
     }
 }

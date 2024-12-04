@@ -24,7 +24,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::orderBy('created_at', 'desc')->get();
+        $categories = Category::where('type', 'inventory')->orderBy('created_at', 'desc')->get();
         return $this->successResponse($categories);
     }
 

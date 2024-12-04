@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Inventory\Material\MaterialStockResource;
 use App\Models\Inventory\Material;
+use Illuminate\Http\Response;
 
 class InventoryStockMaterialController extends Controller
 {
@@ -22,7 +23,12 @@ class InventoryStockMaterialController extends Controller
 
     public function stockStaff($id)
     {
-        $stocks = MaterialStockOptionResource::collection(InventoryStockMaterial::where('owner_id', $id)->where('qty', '>', 0)->get());
-        return $this->successResponse($stocks);
+        try {
+
+            $stocks = MaterialStockOptionResource::collection(InventoryStockMaterial::where('owner_id', $id)->where('qty', '>', 0)->get());
+            return $this->successResponse($stocks);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Ocurrió un error al obtener los datos', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

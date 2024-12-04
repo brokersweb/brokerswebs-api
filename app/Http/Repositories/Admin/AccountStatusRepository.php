@@ -90,6 +90,8 @@ class AccountStatusRepository extends Repository
             'balance' => 'required',
             'payment_condition' => 'required',
             'nquota' => 'required_if:payment_condition,3',
+            'voucher' => 'required_if:payment_condition,1,2',
+            'vouchernum' => 'required_if:payment_condition,1,2',
             'observation' => 'nullable'
         ]);
         if ($valid->fails()) {
@@ -106,7 +108,7 @@ class AccountStatusRepository extends Repository
 
         try {
             $accountStatus = $this->model->create([
-                'immovable_id' => $request->immovable_id,
+                'immovable_id' => $immovable->id,
                 'owner_id' => $immovable->owner_id,
                 'contract_number' => '1010',
                 'month' => $month,
@@ -114,8 +116,11 @@ class AccountStatusRepository extends Repository
                 'expiration_date' => '2025-01-01',
                 'terms_payment' => $this->getPaymentCondition($request->payment_condition),
                 'observation' => $request->observation,
+                'voucher' => $request->voucher,
+                'vouchernum' => $request->vouchernum,
                 'status' => 'created',
             ]);
+
             // Crear detalles y calcular totales
             $totalAmount = 0;
             foreach ($request->details as $detail) {
@@ -145,12 +150,11 @@ class AccountStatusRepository extends Repository
                 'amount_in_letters' => NumberToWords::toPesos($amountPaid),
             ]);
 
+            $this->handlePreviewBalance($request, $accountStatus);
 
-            if ($existatus_account !== null) {
-                $this->updatePreviewBalance($request, $accountStatus);
-            } else {
-                $this->createPreviewBalance($request, $accountStatus);
-            }
+            // $existatus_account ? $this->updatePreviewBalance($request, $accountStatus) : $this->createPreviewBalance($request, $accountStatus);
+
+            // dd($immovable->id);
 
             // Print PDF
             $this->generateInvoicePDF($request, $accountStatus, $configInvoice, $immovable);
@@ -163,24 +167,34 @@ class AccountStatusRepository extends Repository
         }
     }
 
+    private function handlePreviewBalance($request, $accountStatus)
+    {
+        $existingAccountStatus = AccountStatus::where('immovable_id', $accountStatus->immovable_id)->first();
+
+        if ($existingAccountStatus) {
+            $this->updatePreviewBalance($request, $accountStatus);
+        } else {
+            $this->createPreviewBalance($request, $accountStatus);
+        }
+    }
     public function updatePreviewBalance($request, $account)
     {
         $latest = AccountStatus::where('immovable_id', $request->immovable_id)->orderBy('created_at', 'desc')                   // Ordenar en orden descendente por ID
             ->skip(1)
             ->take(1)
             ->first();
-        $previous_balance = PreviousBalance::where('account_status_id', $latest->id)->first();
+        $previous_balance = PreviousBalance::where('accountable_id', $latest->id)->first();
 
         if (!empty($previous_balance)) {
             if ((!empty($latest)) && ($request->balance < 0)) {
                 $preview = $previous_balance->balance >= 0 ? $previous_balance->balance : $previous_balance->balance * (-1);
                 $previous_balance->update([
-                    'account_status_id' => $account->id,
+                    'accountable_id' => $account->id,
                     'balance' => $preview + $request->balance * -1,
                 ]);
             } else if ((!empty($latest)) && ($request->balance >= 0)) {
                 $previous_balance->update([
-                    'account_status_id' => $account->id,
+                    'accountable_id' => $account->id,
                     'balance' => 0,
                 ]);
             }
@@ -188,9 +202,8 @@ class AccountStatusRepository extends Repository
     }
     public function createPreviewBalance($request, $account)
     {
-        PreviousBalance::create([
-            'account_status_id' => $account->id,
-            'balance' => $request->balance <= 0 ? $request->balance : 0,
+        $account->create([
+            'balance' => $request->balance <= 0 ? $request->balance : 0
         ]);
     }
 
@@ -207,7 +220,7 @@ class AccountStatusRepository extends Repository
         foreach ($immovables as $immovable) {
             $account = AccountStatus::where('immovable_id', $immovable->id)->orderBy('id', 'desc')->first();
             if ($account) {
-                $balance = PreviousBalance::where('account_status_id', $account->id)->first();
+                $balance = PreviousBalance::where('accountable_id', $account->id)->first();
                 if ($balance) {
                     $immovable->balance = $balance->balance;
                 } else {

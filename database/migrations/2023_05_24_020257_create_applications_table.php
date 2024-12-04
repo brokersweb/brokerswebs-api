@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('status', ['accepted', 'rejected', 'pending', 'inprogress'])->default('pending');
             $table->enum('priority', ['high', 'medium', 'low'])->default('high');
             $table->longText('comment')->nullable();
+            $table->text('use_property')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

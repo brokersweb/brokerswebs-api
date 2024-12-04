@@ -13,6 +13,7 @@ class InventoryImage extends Model
     protected $fillable = [
         'entityable_type',
         'entityable_id',
+        'situation',
         'url',
     ];
 

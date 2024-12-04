@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Models\Inventory\Category;
 use App\Models\Inventory\Material;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -16,13 +17,28 @@ class MaterialImport implements ToModel,  WithHeadingRow, WithValidation
      */
     public function model(array $row)
     {
+        $categoty = Category::where('name', '=', $row['categoria'])->first();
+        $material = Material::where('code', $row['codigo'])->first();
 
-        return new Material([
-            'name' => $row['nombre'],
-            'code' => $row['codigo'],
-            'stock' => is_numeric($row['cantidad']) ? (int)$row['cantidad'] : 1,
-            'price_basic' => $row['precio'],
-        ]);
+        if ($material) {
+            $material->update([
+                'name' => $row['nombre'],
+                'code' => $row['codigo'],
+                'stock' => is_numeric($row['cantidad']) ? (int)$row['cantidad'] : 1,
+                'price_basic' => $row['precio'],
+                'category_id' => $categoty->id
+            ]);
+
+            return $material;
+        } else {
+            return new Material([
+                'name' => $row['nombre'],
+                'code' => $row['codigo'],
+                'stock' => is_numeric($row['cantidad']) ? (int)$row['cantidad'] : 1,
+                'price_basic' => $row['precio'],
+                'category_id' => $categoty->id
+            ]);
+        }
     }
 
     public function rules(): array
@@ -31,6 +47,7 @@ class MaterialImport implements ToModel,  WithHeadingRow, WithValidation
             '*.nombre' => 'required|string',
             '*.codigo' => 'required',
             '*.cantidad' => 'required|numeric',
+            '*.categoria' => 'required',
         ];
     }
 
@@ -41,6 +58,7 @@ class MaterialImport implements ToModel,  WithHeadingRow, WithValidation
             'codigo.required' => 'El campo código es obligatorio.',
             'cantidad.required' => 'El campo cantidad es obligatorio.',
             'cantidad.numeric' => 'El campo cantidad debe ser un número.',
+            'categoria.required' => 'El campo categoría es obligatorio.',
         ];
     }
 }

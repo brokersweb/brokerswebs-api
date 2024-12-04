@@ -23,10 +23,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
 
     protected $fillable = [
-        'name', 'email',
-        'lastname', 'cellphone',
-        'phone', 'address',
-        'birthday', 'photo',
+        'name',
+        'email',
+        'lastname',
+        'cellphone',
+        'phone',
+        'address',
+        'birthday',
+        'photo',
         'password',
         'dni',
         'status',
@@ -66,5 +70,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+
+    public function bankaccount()
+    {
+        return $this->hasOne(BankAccount::class, 'ownerable_id');
     }
 }

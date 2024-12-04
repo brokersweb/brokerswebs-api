@@ -51,7 +51,11 @@ class RentalContractController extends Controller
                 'referenceii_id' => $request->referenceii_id,
             ]);
 
-            return $this->successResponseWithMessage('El contrato se ha generado de manera exitosa');
+            return $this->successResponseWithMessage(
+                "El contrato de arrendamiento se ha generado exitosamente. " .
+                    "El número de contrato asignado es: {$contract->rentalnum}. " .
+                    "Por favor, guarde este número para futuras referencias."
+            );
         } catch (\Throwable $th) {
             return $this->errorResponse('Ha ocurrido un error al generar el contrato', Response::HTTP_INTERNAL_SERVER_ERROR);
         }

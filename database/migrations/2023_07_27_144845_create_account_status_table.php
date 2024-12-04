@@ -32,6 +32,8 @@ return new class extends Migration
             $table->text('observation')->nullable();
             $table->double('amount_paid')->nullable();
             $table->enum('status', ['created', 'send', 'pending_payment', 'paid', 'partially_paid', 'overdue', 'cancelled', 'amended'])->default('created');
+            $table->longText('voucher')->nullable();
+            $table->string('vouchernum')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

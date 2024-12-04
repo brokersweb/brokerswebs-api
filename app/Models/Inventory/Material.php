@@ -17,7 +17,10 @@ class Material extends Model
         'unit',
         'price_basic',
         'photo',
-        'status'
+        'status',
+        'conditions',
+        'operative_status',
+        'category_id',
     ];
 
     public function status()

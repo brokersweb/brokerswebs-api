@@ -16,11 +16,14 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->foreignUuid('user_id')->constrained();
             $table->foreignUuid('assigned_id')->constrained('users');
-            $table->foreignUuid('client_id')->nullable();
+            $table->uuidMorphs('client');
+            $table->enum('type', ['int', 'ext'])->default('int');
+            $table->integer('progress')->default(0); // Avance o Progreso
             $table->foreignUuid('tenant_id')->nullable()->constrained('tenants');
-            $table->foreignUuid('immovable_id')->nullable()->constrained('immovables');
-            $table->enum('status', ['opened', 'in_progress', 'completed','cancelled'])->default('opened');
-            $table->text('comment')->nullable();
+            $table->enum('status', ['opened', 'in_progress', 'completed', 'cancelled'])->default('opened');
+            // Problema
+            $table->text('request');
+            $table->string('notes')->nullable();
             $table->date('start_date');
             $table->time('start_time');
             $table->timestamps();
@@ -34,7 +37,6 @@ return new class extends Migration
             $table->double('price', 12, 2);
             $table->timestamps();
         });
-
     }
 
     /**
@@ -44,6 +46,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('service_orders');
         Schema::dropIfExists('service_order_services');
-
     }
 };

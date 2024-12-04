@@ -21,6 +21,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all()->load('roles');
+        // dd($users);
         return $this->successResponse($users);
     }
 
@@ -61,12 +62,27 @@ class UserController extends Controller
             'role_id' => 'required|exists:roles,id',
         ];
         $this->validate($request, $rules);
+        // try {
+        $user = User::find($id);
+
+        if ($user->hasRole($request->role_id)) {
+            return $this->errorResponse(
+                'El usuario ya tiene el rol asignado',
+                Response::HTTP_CONFLICT
+            );
+        }
+
+        DB::beginTransaction();
         try {
-            $user = User::find($id);
+
             $user->assignRole($request->role_id);
-            return $this->successResponse($user);
+            DB::commit();
+
+            // $user->assignRole($request->role_id);
+            return $this->successResponseWithMessage('Rol asignado correctamente');
         } catch (\Throwable $th) {
-            return $this->errorResponse('Usuario no encontrado', Response::HTTP_NOT_FOUND);
+            DB::rollBack();
+            return $this->errorResponse('Error al asignar el rol', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

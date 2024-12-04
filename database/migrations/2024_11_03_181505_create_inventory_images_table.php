@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuidMorphs('entityable');
             $table->longText('url');
+            $table->enum('situation', ['damage', 'solution', 'none'])->default('none');
             $table->timestamps();
         });
     }

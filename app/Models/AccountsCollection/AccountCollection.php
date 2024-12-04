@@ -2,6 +2,7 @@
 
 namespace App\Models\AccountsCollection;
 
+use App\Models\AccountsStatus\PreviousBalance;
 use App\Models\Immovable;
 use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -30,7 +31,9 @@ class AccountCollection extends Model
         'payment_observation',
         'observation',
         'amount_paid',
-        'status'
+        'status',
+        'voucher',
+        'vouchernum'
     ];
 
     public function immovable()
@@ -77,5 +80,10 @@ class AccountCollection extends Model
         }
 
         return $sta;
+    }
+
+    public function previousbalance()
+    {
+        return $this->belongsTo(PreviousBalance::class, 'accountable');
     }
 }

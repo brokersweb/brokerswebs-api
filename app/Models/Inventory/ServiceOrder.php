@@ -17,10 +17,13 @@ class ServiceOrder extends Model
         'user_id',
         'assigned_id',
         'client_id',
-        'tenant_id',
-        'immovable_id',
+        'client_type',
+        'type',
         'status',
-        'comment',
+        'tenant_id',
+        'request',
+        'progress',
+        'notes',
         'start_date',
         'start_time',
     ];
@@ -65,4 +68,12 @@ class ServiceOrder extends Model
     {
         return $this->morphMany(InventoryImage::class, 'entityable');
     }
+
+
+    public function consumes()
+    {
+        return $this->hasMany(InventoryConsumableMaterial::class, 'service_order_id');
+    }
+
+    
 }

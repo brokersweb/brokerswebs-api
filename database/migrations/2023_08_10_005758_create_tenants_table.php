@@ -14,25 +14,45 @@ return new class extends Migration
         Schema::create('tenants', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->string('lastname')->nullable();
+            $table->string('lastname');
             $table->enum('document_type', ['CC', 'CE', 'TI', 'PPN', 'NIT', 'RC', 'RUT']);
-            $table->string('dni')->unique();
+            $table->string('dni')->unique(); //Número de documento');
             $table->string('expedition_place');
             $table->string('expedition_date');
-            $table->string('email')->nullable();
-            $table->string('cellphone')->unique();
-            $table->string('phone')->unique()->nullable();
-            $table->string('address')->nullable();
-            $table->json('bank_account')->nullable()->comment('Cuenta bancaria');
+            $table->string('cellphone');
+            $table->string('phone')->nullable();
             $table->date('birthdate');
             $table->enum('gender', ['Masculino', 'Femenino', 'Otro']);
-            $table->enum('type', ['holder', 'secondary'])->default('secondary');
             $table->enum('civil_status', ['Soltero', 'Casado', 'Unión libre', 'Viudo', 'Divorciado']);
-            $table->integer('dependent_people')->comment('N° de personas a cargo')->nullable();
-            $table->string('profession')->nullable();
-            $table->longText('dni_file')->comment('Archivo de documento de identificación')->nullable();
+            $table->integer('dependent_people')->nullable(); //Número de personas a cargo');
+            $table->string('profession');
+            $table->string('email');
+            $table->string('address');
+            $table->string('city_birth');
+            $table->string('nationality');
+            $table->string('neighborhood');
+            $table->string('city_municipality');
+            $table->string('department');
+            $table->string('country');
+            $table->string('professional_title')->nullable();
+            $table->string('occupation');
+            $table->string('main_economic_activity');
+            $table->string('detail_economic_activity');
+            $table->string('facebook')->nullable();
+            $table->string('twitter')->nullable();
+            $table->integer('has_realestate'); // 0: si y 1: no
+            $table->string('property_address')->nullable();
+            $table->string('property_city')->nullable();
+            $table->integer('has_vehicles'); // 0: si y 1: no
+            $table->string('brand')->nullable();
+            $table->string('line')->nullable();
+            $table->string('model')->nullable();
+            $table->integer('has_pledge'); // 0: si y 1: no
+            $table->longText('dni_file');
             $table->longText('photo')->nullable();
+            // Tipo de trabajo: 1. Empleado 2. Independiente formal 3. Otro = Profesional Independiente 4. Pensionado 5. Rentista de capital
             $table->enum('working_type', ['employee', 'independent', 'freelancerp', 'pensioner', 'capitalrentier'])->nullable()->comment('Tipo de trabajo');
+
             $table->softDeletes();
             $table->timestamps();
         });

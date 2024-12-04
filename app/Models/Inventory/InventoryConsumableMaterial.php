@@ -14,7 +14,14 @@ class InventoryConsumableMaterial extends Model
 
     protected $fillable = [
         'service_order_id',
-        'material',
+        'material_id',
+        'material_type',
         'qty',
     ];
+
+
+    public function material()
+    {
+        return $this->belongsTo(Material::class, 'material_id', 'id');
+    }
 }

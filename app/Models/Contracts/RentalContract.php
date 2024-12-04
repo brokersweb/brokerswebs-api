@@ -12,6 +12,7 @@ class RentalContract extends Model
     use HasUuids;
 
     protected $fillable =  [
+        'rentalnum',
         'immovable_id',
         'tenant_id',
         'start_date',

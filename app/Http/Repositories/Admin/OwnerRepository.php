@@ -82,7 +82,9 @@ class OwnerRepository extends Repository
             'civil_status' => 'nullable|in:Soltero,Casado,Unión libre,Viudo,Divorciado',
             'dependent_people' => 'nullable',
             'profession' => 'nullable',
-            'dni_file' => 'required',
+            'dni_file' => 'nullable',
+            'rut' => 'nullable',
+            'nit' => 'nullable',
             'photo' => 'nullable',
         ]);
 
@@ -91,16 +93,19 @@ class OwnerRepository extends Repository
         }
 
         $bank_account = array(
-            'holder_name' => $request->holder_name,
-            'bank_name' => $request->bank_name,
-            'account_type' => $request->account_type,
-            'account_number' => $request->account_number,
+            'holder_name' => base64_encode($request->holder_name),
+            'bank_name' => base64_encode($request->bank_name),
+            'account_type' => base64_encode($request->account_type),
+            'account_number' => base64_encode($request->account_number),
         );
+
         Owner::create([
             'name' => $request->name,
             'lastname' => $request->lastname,
             'document_type' => $request->document_type,
             'dni' => $request->dni,
+            'rut' => $request->rut,
+            'nit' => $request->nit,
             'expedition_place' => $request->expedition_place,
             'expedition_date' => $request->expedition_date,
             'cellphone' => $request->cellphone,
@@ -115,6 +120,7 @@ class OwnerRepository extends Repository
             'profession' => $request->profession,
             'dni_file' => $request->dni_file,
             'photo' => $request->photo,
+            'type' => 'holder',
         ]);
 
         // Create User Profile
@@ -132,7 +138,7 @@ class OwnerRepository extends Repository
         ]);
 
 
-        return $this->successResponseWithMessage('Propietario creado');
+        return $this->successResponseWithMessage('Propietario registrado de manera exitosa.');
     }
 
     // Actualizar el perfil del propietario

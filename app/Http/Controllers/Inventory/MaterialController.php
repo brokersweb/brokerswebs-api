@@ -10,12 +10,20 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\MaterialImport;
+use App\Imports\MaterialPriceImport;
+use App\Services\LowStockReportService;
 use App\Traits\AuthorizesRoleOrPermission;
 
 class MaterialController extends Controller
 {
     use AuthorizesRoleOrPermission;
 
+    private $lowStockReportService;
+
+    public function __construct(LowStockReportService $lowStockReportService)
+    {
+        $this->lowStockReportService = $lowStockReportService;
+    }
 
     /**
      * @OA\Get(
@@ -36,7 +44,7 @@ class MaterialController extends Controller
         return $this->successResponse($materials);
     }
 
-      /**
+    /**
      * @OA\Get(
      *     path="/api/inventory/materials/options",
      *     tags={"Materiales"},
@@ -73,6 +81,9 @@ class MaterialController extends Controller
             'unit' => 'nullable',
             'price_basic' => 'nullable',
             'photo' => 'nullable',
+            'category_id' => 'required|exists,categories,id',
+            'operative_status' => 'nullable',
+            'conditions' => 'required',
         ]);
 
         $request['status'] = 'available';
@@ -102,6 +113,9 @@ class MaterialController extends Controller
             'stock' => 'required',
             'price_basic' => 'nullable',
             'photo' => 'nullable',
+            'category_id' => 'required|exists,categories,id',
+            'operative_status' => 'nullable',
+            'conditions' => 'required',
         ]);
 
         if ($valid->fails()) {
@@ -156,4 +170,85 @@ class MaterialController extends Controller
 
         return $this->errorResponse('No se ha seleccionado un archivo', Response::HTTP_BAD_REQUEST);
     }
+
+    // TODO:: PRECIOS
+    public function updatePrice(Request $request, $id)
+    {
+
+        $material = Material::find($id);
+
+        if (!$material) {
+            return $this->errorResponse('Material no encontrado', Response::HTTP_NOT_FOUND);
+        }
+
+
+        $valid = Validator::make($request->all(), [
+            'price' => 'required',
+        ]);
+
+        if ($valid->fails()) {
+            return $this->errorResponse($valid->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $material->update([
+                'price_basic' => $request->price
+            ]);
+            return $this->successResponseWithMessage('Precio actualizado exitosamente', Response::HTTP_OK);
+        } catch (\InvalidArgumentException $e) {
+            return $this->errorResponse($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function importPrice(Request $request)
+    {
+        $valid = Validator::make($request->all(), [
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        if ($valid->fails()) {
+            return $this->errorResponse($valid->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($request->file('file')) {
+            try {
+                Excel::import(new MaterialPriceImport, $request->file('file'));
+                return $this->successResponseWithMessage('Precios actualizados exitosamente', Response::HTTP_OK);
+            } catch (\Exception $e) {
+                return $this->errorResponse('Ocurrió un error al actualizar los precios', Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        return $this->errorResponse('No se ha seleccionado un archivo', Response::HTTP_BAD_REQUEST);
+    }
+
+
+
+    public function generateLowStockReport(Request $request)
+    {
+
+        $valid = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+
+        if ($valid->fails()) {
+            return $this->errorResponse($valid->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+
+            $result = $this->lowStockReportService->generateLowStockReport(10, $request->email);
+
+            return response()->json([
+                'success' => $result,
+                'message' => $result
+                    ? 'Reporte de stock bajo generado y enviado'
+                    : 'No hay materiales con stock bajo'
+            ]);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Ocurrió un error al generar el reporte', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

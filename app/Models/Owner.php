@@ -25,6 +25,8 @@ class Owner extends Model
         'bank_account',
         'birthdate',
         'gender',
+        'rut',
+        'nit',
         'type',
         'civil_status',
         'dependent_people',

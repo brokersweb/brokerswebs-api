@@ -11,24 +11,44 @@ class Applicant extends Model
 {
     use HasUuids, HasFactory, SoftDeletes;
 
-    protected $table = 'applicants';
     protected $fillable = [
+        'dependent_people',
         'name',
         'lastname',
-        'dni',
         'document_type',
+        'dni',
         'expedition_place',
         'expedition_date',
+        'cellphone',
         'phone',
         'working_type',
         'birthdate',
         'gender',
         'civil_status',
-        'dependent_people',
         'profession',
         'email',
         'address',
-        'dni_file'
+        'city_birth',
+        'nationality',
+        'neighborhood',
+        'city_municipality',
+        'department',
+        'country',
+        'professional_title',
+        'occupation',
+        'main_economic_activity',
+        'detail_economic_activity',
+        'facebook',
+        'twitter',
+        'has_realestate',
+        'property_address',
+        'property_city',
+        'has_vehicles',
+        'brand',
+        'line',
+        'model',
+        'has_pledge',
+        'dni_file',
     ];
 
     protected $hidden = [
