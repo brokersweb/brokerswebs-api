@@ -120,6 +120,26 @@ class ServiceOrderController extends Controller
         }
     }
 
+
+    public function showAdmin($id)
+    {
+        $order = ServiceOrder::find($id)->load('user', 'staff', 'services', 'client', 'immovable', 'consumes');
+
+        if (!$order) {
+            return $this->errorResponse('Orden no encontrada', Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+
+            return $this->successResponse(new OrderOneServiceResource($order), Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->errorResponse(
+                'Error al obtener la orden',
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     public function show($id)
     {
         $order = ServiceOrder::find($id);

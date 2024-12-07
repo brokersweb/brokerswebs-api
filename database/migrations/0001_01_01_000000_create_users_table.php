@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('birthday')->nullable();
             $table->longText('photo')->nullable();
+            $table->string('payroll')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('inactive');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

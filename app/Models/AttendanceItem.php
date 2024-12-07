@@ -12,10 +12,13 @@ class AttendanceItem extends Model
     protected $fillable = [
         'attendance_id',
         'staff_id',
+        'check_in',
+        'check_out',
         'position',
         'worksite',
         'payment',
         'status',
+        'notes'
     ];
 
 

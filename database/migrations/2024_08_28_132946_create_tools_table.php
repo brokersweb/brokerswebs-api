@@ -17,8 +17,11 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->longText('photo')->nullable();
             $table->bigInteger('total_quantity')->default(1);
-            $table->double('price', 12,2)->nullable();
+            $table->double('price', 12, 2)->nullable();
+            $table->foreignUuid('category_id')->nullable();
             $table->bigInteger('available_quantity')->default(1);
+            $table->string('conditions')->nullable()->default('new');
+            $table->enum('operative_status', ['active', 'inactive', 'notfound'])->nullable()->default('active'); // new , used
             $table->enum('status', ['available', 'unavailable', 'out_stock'])->default('available');
             $table->timestamps();
         });

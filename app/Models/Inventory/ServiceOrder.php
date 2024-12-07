@@ -3,6 +3,7 @@
 namespace App\Models\Inventory;
 
 use App\Models\Immovable;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -60,9 +61,17 @@ class ServiceOrder extends Model
 
     public function client()
     {
-        return $this->belongsTo(Immovable::class, 'client_id');
+        return $this->belongsTo(InventoryClient::class, 'client_id');
     }
 
+    public function immovable()
+    {
+        return $this->belongsTo(Immovable::class, 'client_id');
+    }
+    public function tenant()
+    {
+        return $this->hasOne(Tenant::class, 'tenant_id');
+    }
 
     public function evidences()
     {
@@ -74,6 +83,4 @@ class ServiceOrder extends Model
     {
         return $this->hasMany(InventoryConsumableMaterial::class, 'service_order_id');
     }
-
-    
 }

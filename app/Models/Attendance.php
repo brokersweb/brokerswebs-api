@@ -22,4 +22,30 @@ class Attendance extends Model
     {
         return $this->hasMany(AttendanceItem::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function confirmed()
+    {
+        return $this->belongsTo(User::class, 'confirmed_id');
+    }
+
+
+    public function getStatusAttribute()
+    {
+
+        switch ($this->attributes['status']) {
+            case 'pending':
+                return 'Por confirmar';
+                break;
+            case 'confirmed':
+                return 'Confirmada';
+                break;
+            default:
+                return 'Creada';
+        }
+    }
 }

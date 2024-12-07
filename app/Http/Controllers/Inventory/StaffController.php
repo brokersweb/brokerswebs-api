@@ -25,6 +25,16 @@ class StaffController extends Controller
 
         return $this->successResponse($staff);
     }
+    // Todo:: Construcción
+    public function indexConstruccion()
+    {
+        $staff = User::orderBy('created_at', 'DESC')->where('payroll', 'building')
+            ->where('status', 'active')->whereHas('roles', function ($query) {
+                $query->where('name', 'Staff');
+            })->get();
+
+        return $this->successResponse($staff);
+    }
 
     public function store(Request $request)
     {
@@ -39,6 +49,7 @@ class StaffController extends Controller
             'birthday' => 'nullable',
             'entity' => 'required|in:nequi,bank',
             'holder_name' => 'required',
+            'payroll' => 'required',
             'bank' => 'required_if:entity,bank',
             'type' => 'required_if:entity,bank',
             'account_number' => 'required'
@@ -58,6 +69,7 @@ class StaffController extends Controller
                 'lastname' => $request->lastname,
                 'email' => $request->email,
                 'cellphone' => $request->cellphone,
+                'payroll' => $request->payroll,
                 'password' =>  Hash::make('Password123'),
                 'dni' => $request->dni,
                 'status' => 'active',
@@ -100,6 +112,7 @@ class StaffController extends Controller
             'email' => 'required|email|unique:users,email,' . $id,
             'cellphone' => 'required|unique:users,cellphone,' . $id,
             'photo' => 'required',
+            'payroll' => 'required',
             'birthday' => 'nullable',
             'status' => 'required'
         ]);
@@ -119,6 +132,7 @@ class StaffController extends Controller
                 'email' => $request->email,
                 'cellphone' => $request->cellphone,
                 'dni' => $request->dni,
+                'payroll' => $request->payroll,
                 'status' => $request->status,
                 'photo' => $request->photo
             ]);

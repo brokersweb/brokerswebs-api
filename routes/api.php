@@ -99,6 +99,8 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
 
         Route::group(['prefix' => 'users'], function () {
             Route::get('/staff', [App\Http\Controllers\UserController::class, 'indexStaff']);
+            Route::get('/staff-building', [App\Http\Controllers\Inventory\StaffController::class, 'indexConstruccion']);
+
             Route::post('/role-add', [App\Http\Controllers\UserController::class, 'assignRole']);
             Route::put('/{id}/roles-update', [App\Http\Controllers\UserController::class, 'updateRoles']);
 
@@ -236,6 +238,13 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
             Route::post('/', [App\Http\Controllers\Panel\LeaseDocContractController::class, 'store']);
         });
 
+          // Asistencia
+          Route::prefix('attendances')->group(function () {
+            Route::get('/', [App\Http\Controllers\Inventory\AttendanceController::class, 'index']);
+            Route::post('/', [App\Http\Controllers\Inventory\AttendanceController::class, 'store']);
+            Route::patch('/status-update/{id}', [App\Http\Controllers\Inventory\AttendanceController::class, 'updateStatus']);
+        });
+
 
 
         /*
@@ -337,6 +346,8 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
                 Route::post('/', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'store']);
                 Route::get('/{id}', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'show']);
                 Route::get('/details/{id}', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'showDetails']);
+                Route::get('/details-admin/{id}', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'showAdmin']);
+
 
                 // Servicios
                 Route::get('/services/{id}', [App\Http\Controllers\Inventory\ServiceOrderController::class, 'getOrderServices']);
@@ -414,12 +425,7 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
                 Route::delete('/{id}', [App\Http\Controllers\Inventory\StaffController::class, 'destroy']);
             });
 
-            // Personal
-            Route::prefix('attendances')->group(function () {
-                Route::get('/', [App\Http\Controllers\Inventory\AttendanceController::class, 'index']);
-                Route::post('/', [App\Http\Controllers\Inventory\AttendanceController::class, 'store']);
-                Route::put('/status-update/{id}', [App\Http\Controllers\Inventory\AttendanceController::class, 'updateStatus']);
-            });
+
 
             // Clientes
             Route::prefix('customers')->group(function () {

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Inventory;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\AttendanceResource;
 use App\Models\Attendance;
+use Attribute;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Response;
@@ -14,6 +16,8 @@ class AttendanceController extends Controller
     public function index()
     {
         $attendances = Attendance::all();
+        $attendances = AttendanceResource::collection($attendances);
+
         return $this->successResponse($attendances);
     }
 
@@ -21,10 +25,9 @@ class AttendanceController extends Controller
     {
 
         $valid = Validator::make($request->all(), [
-            'notes' => 'required',
-            'attdate' => 'required',
-            'user_id' => 'required|exists:users,id',
-            'items' => 'required'
+            'notes' => 'nullable',
+            'date' => 'required',
+            'staffAttendance' => 'required|array'
         ]);
 
 
@@ -32,22 +35,29 @@ class AttendanceController extends Controller
             return $this->errorResponse($valid->errors(), Response::HTTP_BAD_REQUEST);
         }
 
+        $exist = Attendance::where('attdate', $request->date)->first();
+        if ($exist) {
+            return $this->errorResponse('Esta Asistencia ya ha sido registrada para la fecha seleccionada.', Response::HTTP_BAD_REQUEST);
+        }
+
         try {
 
             $attendance = Attendance::create([
                 'notes' => $request->notes,
-                'attdate' => $request->attdate,
-                'user_id' => $request->user_id,
+                'attdate' => $request->date,
+                'user_id' => Auth::id(),
             ]);
 
-            foreach ($request->items as $item) {
+            foreach ($request->staffAttendance as $item) {
 
                 $attendance->items()->create([
+                    'check_in' => $item['check_in'],
+                    'check_out' => $item['check_out'],
                     'staff_id' => $item['staff_id'],
                     'position' => $item['position'],
                     'worksite' => $item['worksite'],
                     'payment' => $item['payment'],
-                    'status' => $item['status'],
+                    'status' => $item['is_active'],
                 ]);
             }
 
