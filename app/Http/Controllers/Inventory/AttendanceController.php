@@ -99,4 +99,19 @@ class AttendanceController extends Controller
             return $this->errorResponse('Error al actualizar el estado de la asistencia', Response::HTTP_BAD_REQUEST);
         }
     }
+
+
+    public function show($id)
+    {
+        $attendance = Attendance::find($id)->load('items');
+
+        try {
+            if (!$attendance) {
+                return $this->errorResponse('Asistencia no encontrada', Response::HTTP_NOT_FOUND);
+            }
+            return $this->successResponse($attendance);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener la asistencia', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

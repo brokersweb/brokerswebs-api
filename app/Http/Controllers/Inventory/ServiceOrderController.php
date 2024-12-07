@@ -326,4 +326,25 @@ class ServiceOrderController extends Controller
             );
         }
     }
+
+
+    public function validateCotization(Request $request, $id)
+    {
+
+        $cotization = InventoryConsumableMaterial::find($id);
+
+
+        $valid = Validator::make($request->all(), [
+            'order_id' => 'required|exists:service_orders,id',
+            'details.*.matId' => 'required|exists:materials,id',
+            'notes' => 'nullable',
+            'progress' => 'required'
+        ]);
+
+        if ($valid->fails()) {
+            return $this->errorResponse($valid->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
+        
+    }
 }

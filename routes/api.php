@@ -241,8 +241,10 @@ Route::group(['middleware' => ['auth', 'jwt.role-admin']], function () {
           // Asistencia
           Route::prefix('attendances')->group(function () {
             Route::get('/', [App\Http\Controllers\Inventory\AttendanceController::class, 'index']);
+            Route::get('/{id}', [App\Http\Controllers\Inventory\AttendanceController::class, 'show']);
             Route::post('/', [App\Http\Controllers\Inventory\AttendanceController::class, 'store']);
             Route::patch('/status-update/{id}', [App\Http\Controllers\Inventory\AttendanceController::class, 'updateStatus']);
+
         });
 
 
